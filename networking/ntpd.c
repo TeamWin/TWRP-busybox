@@ -46,7 +46,11 @@
 #include "libbb.h"
 #include <math.h>
 #include <netinet/ip.h> /* For IPTOS_LOWDELAY definition */
+#ifdef __BIONIC__
+#include <linux/timex.h>
+#else
 #include <sys/timex.h>
+#endif
 #ifndef IPTOS_LOWDELAY
 # define IPTOS_LOWDELAY 0x10
 #endif
@@ -1903,7 +1907,7 @@ static NOINLINE void ntp_init(char **argv)
 	srandom(getpid());
 
 	if (getuid())
-		bb_error_msg_and_die(bb_msg_you_must_be_root);
+		bb_error_msg_and_die("%s", bb_msg_you_must_be_root);
 
 	/* Set some globals */
 	G.stratum = MAXSTRAT;

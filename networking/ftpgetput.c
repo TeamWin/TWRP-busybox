@@ -220,7 +220,7 @@ int ftp_receive(const char *local_path, char *server_path)
 {
 	int fd_data;
 	int fd_local = -1;
-	off_t beg_range = 0;
+	filesize_t beg_range = 0;
 
 	/* connect to the data socket */
 	fd_data = xconnect_ftpdata();
@@ -248,7 +248,7 @@ int ftp_receive(const char *local_path, char *server_path)
 	}
 
 	if (do_continue) {
-		sprintf(buf, "REST %"OFF_FMT"u", beg_range);
+		sprintf(buf, "REST %"FILESIZE_FMT"u", beg_range);
 		if (ftpcmd(buf, NULL) != 350) {
 			do_continue = 0;
 		}

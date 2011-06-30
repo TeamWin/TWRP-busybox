@@ -37,11 +37,9 @@ struct globals {
 #define new_settings     (G.new_settings    )
 #define cin_fileno       (G.cin_fileno      )
 
-#define setTermSettings(fd, argp) \
-do { \
-	if (ENABLE_FEATURE_USE_TERMIOS) \
-		tcsetattr(fd, TCSANOW, argp); \
-} while (0)
+#define setTermSettings(fd, argp) do { \
+		if (ENABLE_FEATURE_USE_TERMIOS) tcsetattr(fd, TCSANOW, argp); \
+	} while (0)
 #define getTermSettings(fd, argp) tcgetattr(fd, argp)
 
 static void gotsig(int sig UNUSED_PARAM)
@@ -58,7 +56,7 @@ static void gotsig(int sig UNUSED_PARAM)
 int more_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int more_main(int argc UNUSED_PARAM, char **argv)
 {
-	int c = c; /* for compiler */
+	int c = EOF; /* for compiler */
 	int lines;
 	int input = 0;
 	int spaces = 0;
@@ -122,11 +120,8 @@ int more_main(int argc UNUSED_PARAM, char **argv)
 			if (input != 'r' && please_display_more_prompt) {
 				len = printf("--More-- ");
 				if (st.st_size != 0) {
-					uoff_t d = (uoff_t)st.st_size / 100;
-					if (d == 0)
-						d = 1;
-					len += printf("(%u%% of %"OFF_FMT"u bytes)",
-						(int) ((uoff_t)ftello(file) / d),
+					len += printf("(%u%% of %"FILESIZE_FMT"u bytes)",
+						(int) (ftello(file)*100 / st.st_size),
 						st.st_size);
 				}
 				fflush_all();

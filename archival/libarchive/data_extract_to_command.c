@@ -38,7 +38,7 @@ static const char *const tar_var[] = {
 static void xputenv(char *str)
 {
 	if (putenv(str))
-		bb_error_msg_and_die(bb_msg_memory_exhausted);
+		bb_error_msg_and_die("%s", bb_msg_memory_exhausted);
 }
 
 static void str2env(char *env[], int idx, const char *str)

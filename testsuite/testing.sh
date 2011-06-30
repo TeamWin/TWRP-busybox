@@ -36,6 +36,13 @@
 export FAILCOUNT=0
 export SKIP=
 
+# Android Specific
+
+if [ ! -x /bin ]; then
+	mount -o remount,rw /
+	ln -s /system/xbin /bin
+fi
+
 # Helper for helpers. Oh my...
 
 test x"$ECHO" != x"" || {

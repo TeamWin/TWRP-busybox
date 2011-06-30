@@ -537,13 +537,28 @@ static NOINLINE unsigned display_single(const struct dnode *dn)
 	}
 #if ENABLE_FEATURE_LS_USERNAME
 	else if (G.all_fmt & LIST_ID_NAME) {
-		if (option_mask32 & OPT_g) {
-			column += printf("%-8.8s ",
-				get_cached_groupname(dn->dn_gid));
+		//extend user/group names to 12 char. 
+		//if terminal has more than 88 cols (or -w 88 is set)
+		if (G_terminal_width >= 88) {
+			#define UGLONG_FMT "%-12.12s "
+			if (option_mask32 & OPT_g) {
+				column += printf(UGLONG_FMT,
+					get_cached_groupname(dn->dn_gid));
+			} else {
+				column += printf(UGLONG_FMT UGLONG_FMT,
+					get_cached_username(dn->dn_uid),
+					get_cached_groupname(dn->dn_gid));
+			}
 		} else {
-			column += printf("%-8.8s %-8.8s ",
-				get_cached_username(dn->dn_uid),
-				get_cached_groupname(dn->dn_gid));
+			#define UGDEF_FMT "%-8.8s "
+			if (option_mask32 & OPT_g) {
+				column += printf(UGDEF_FMT,
+					get_cached_groupname(dn->dn_gid));
+			} else {
+				column += printf(UGDEF_FMT UGDEF_FMT,
+					get_cached_username(dn->dn_uid),
+					get_cached_groupname(dn->dn_gid));
+			}
 		}
 	}
 #endif

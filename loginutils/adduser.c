@@ -154,7 +154,7 @@ int adduser_main(int argc UNUSED_PARAM, char **argv)
 
 	/* got root? */
 	if (geteuid()) {
-		bb_error_msg_and_die(bb_msg_perm_denied_are_you_root);
+		bb_error_msg_and_die("%s", bb_msg_perm_denied_are_you_root);
 	}
 
 	pw.pw_gecos = (char *)"Linux User,,,";

@@ -13,6 +13,7 @@ Config.in
 # Never ignore these
 #
 !.gitignore
+!.config*
 
 #
 # Normal output
@@ -28,6 +29,7 @@ Config.in
 *.orig
 *.rej
 /*.patch
+/.config.old
 
 #
 # debugging stuff

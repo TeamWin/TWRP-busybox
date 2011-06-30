@@ -35,10 +35,12 @@
 
 #include <net/route.h>
 #include <net/if.h>
-
 #include "libbb.h"
 #include "inet_common.h"
 
+#if ENABLE_FEATURE_IPV6
+#include "ipv6/ipv6_route.h"
+#endif
 
 #ifndef RTF_UP
 /* Keep this in sync with /usr/src/linux/include/linux/route.h */
@@ -55,6 +57,12 @@
 #define RTF_WINDOW      0x0080	/* per route window clamping    */
 #define RTF_IRTT        0x0100	/* Initial round trip time      */
 #define RTF_REJECT      0x0200	/* Reject route                 */
+#endif
+
+#ifndef RTF_CACHE
+#define RTF_DEFAULT     0x00010000  /* default - learned via ND */
+#define RTF_ADDRCONF    0x00040000  /* addrconf route - RA      */
+#define RTF_CACHE       0x01000000  /* cache entry              */
 #endif
 
 #if defined(SIOCADDRTOLD) || defined(RTF_IRTT)	/* route */

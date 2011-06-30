@@ -84,7 +84,7 @@ static ssize_t tail_read(int fd, char *buf, size_t count)
 
 	r = full_read(fd, buf, count);
 	if (r < 0) {
-		bb_perror_msg(bb_msg_read_error);
+		bb_perror_msg("%s", bb_msg_read_error);
 		G.exitcode = EXIT_FAILURE;
 	}
 
@@ -258,8 +258,16 @@ int tail_main(int argc, char **argv)
 				if (seen < count) {
 					/* We need to skip a few more bytes/lines */
 					if (COUNT_BYTES) {
-						nwrite -= (count - seen);
-						seen = count;
+						if (nwrite > count - seen)
+						{
+							nwrite -= (count - seen);
+							seen = count;
+						}
+						else
+						{
+							seen += nwrite;
+							nwrite = 0;
+						}
 					} else {
 						char *s = buf;
 						do {

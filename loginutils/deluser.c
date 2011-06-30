@@ -38,7 +38,7 @@ int deluser_main(int argc, char **argv)
 	int do_deluser = (ENABLE_DELUSER && (!ENABLE_DELGROUP || applet_name[3] == 'u'));
 
 	if (geteuid() != 0)
-		bb_error_msg_and_die(bb_msg_perm_denied_are_you_root);
+		bb_error_msg_and_die("%s", bb_msg_perm_denied_are_you_root);
 
 	name = argv[1];
 	member = NULL;

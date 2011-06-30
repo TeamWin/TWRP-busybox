@@ -129,7 +129,7 @@ int addgroup_main(int argc UNUSED_PARAM, char **argv)
 
 	/* need to be root */
 	if (geteuid()) {
-		bb_error_msg_and_die(bb_msg_perm_denied_are_you_root);
+		bb_error_msg_and_die("%s", bb_msg_perm_denied_are_you_root);
 	}
 #if ENABLE_FEATURE_ADDGROUP_LONG_OPTIONS
 	applet_long_options = addgroup_longopts;

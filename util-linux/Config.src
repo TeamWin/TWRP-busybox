@@ -370,7 +370,7 @@ config IPCRM
 config IPCS
 	bool "ipcs"
 	default y
-	select PLATFORM_LINUX
+	depends on PLATFORM_LINUX
 	help
 	  The ipcs utility is used to provide information on the currently
 	  allocated System V interprocess (IPC) objects in the system.

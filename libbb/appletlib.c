@@ -34,7 +34,6 @@
 # include <malloc.h> /* for mallopt */
 #endif
 
-
 /* Declare <applet>_main() */
 #define PROTOTYPES
 #include "applets.h"
@@ -627,8 +626,8 @@ static int busybox_main(char **argv)
 		full_write2_str(bb_banner); /* reuse const string */
 		full_write2_str(" multi-call binary.\n"); /* reuse */
 		full_write2_str(
-			"Copyright (C) 1998-2009 Erik Andersen, Rob Landley, Denys Vlasenko\n"
-			"and others. Licensed under GPLv2.\n"
+			"Copyright (C) 1998-2011 Erik Andersen, Rob Landley, Denys Vlasenko\n"
+			"and others. Licensed under GPLv2. Merged for bionic by tpruvot@github\n"
 			"See source distribution for full notice.\n"
 			"\n"
 			"Usage: busybox [function] [arguments]...\n"

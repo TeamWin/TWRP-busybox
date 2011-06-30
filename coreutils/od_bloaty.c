@@ -1378,7 +1378,7 @@ int od_main(int argc UNUSED_PARAM, char **argv)
 		dump(n_bytes_to_skip, end_offset);
 
 	if (fclose(stdin))
-		bb_perror_msg_and_die(bb_msg_standard_input);
+		bb_perror_msg_and_die("%s", bb_msg_standard_input);
 
 	return exit_code;
 }

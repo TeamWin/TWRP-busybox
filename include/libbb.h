@@ -12,7 +12,20 @@
 
 #include "platform.h"
 
+#ifdef __BIONIC__
+/* work around "extern inline" (under std=gnu99) ctype definitions we don't use anyway */
+# ifdef NDEBUG
+#  define NDEBUG_TMP NDEBUG
+# endif
+# undef NDEBUG
+# include <ctype.h>
+# ifdef NDEBUG_TMP
+#  define NDEBUG NDEBUG_TMP
+#  undef NDEBUG_TMP
+# endif
+#else
 #include <ctype.h>
+#endif
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -130,7 +143,7 @@ int klogctl(int type, char *b, int len);
 /* This is declared here rather than #including <libgen.h> in order to avoid
  * confusing the two versions of basename.  See the dirname/basename man page
  * for details. */
-#if !defined __FreeBSD__
+#if !defined __FreeBSD__ && !defined __BIONIC__
 char *dirname(char *path);
 #endif
 /* Include our own copy of struct sysinfo to avoid binary compatibility
@@ -175,6 +188,7 @@ int sysinfo(struct sysinfo* info);
 # undef  fputc
 # define fputc(c, stream) putc_unlocked(c, stream)
 #endif
+
 /* Above functions are required by POSIX.1-2008, below ones are extensions */
 #ifdef HAVE_UNLOCKED_LINE_OPS
 # undef  fgets
@@ -182,7 +196,6 @@ int sysinfo(struct sysinfo* info);
 # undef  fputs
 # define fputs(s, stream) fputs_unlocked(s, stream)
 #endif
-
 
 /* Make all declarations hidden (-fvisibility flag only affects definitions) */
 /* (don't include system headers after this until corresponding pop!) */
@@ -259,6 +272,15 @@ typedef unsigned long uoff_t;
 #endif
 /* scary. better ideas? (but do *test* them first!) */
 #define OFF_T_MAX  ((off_t)~((off_t)1 << (sizeof(off_t)*8-1)))
+
+#ifdef __BIONIC__
+/* bionic uses stat64 which has long long file sizes, whereas off_t is only long bits */
+typedef long long filesize_t;
+#define FILESIZE_FMT "ll"
+#else
+typedef off_t filesize_t;
+#define FILESIZE_FMT OFF_FMT
+#endif
 
 /* Some useful definitions */
 #undef FALSE
@@ -1727,18 +1749,43 @@ extern struct globals *const ptr_to_globals;
  * use bb_default_login_shell and following defines.
  * If you change LIBBB_DEFAULT_LOGIN_SHELL,
  * don't forget to change increment constant. */
-#define LIBBB_DEFAULT_LOGIN_SHELL  "-/bin/sh"
 extern const char bb_default_login_shell[];
-/* "/bin/sh" */
-#define DEFAULT_SHELL              (bb_default_login_shell+1)
+
+#ifdef __BIONIC__
+/* Since android does not have the /bin path, unlike most unix systems,
+ * it needs an exception in the default shell path. */
+# define LIBBB_DEFAULT_LOGIN_SHELL      "-/system/bin/sh"
+/* "/system/xbin/sh" */
+# define DEFAULT_SHELL     (bb_default_login_shell+1)
 /* "sh" */
-#define DEFAULT_SHELL_SHORT_NAME   (bb_default_login_shell+6)
+# define DEFAULT_SHELL_SHORT_NAME     (bb_default_login_shell+13)
+
+#else
+# define LIBBB_DEFAULT_LOGIN_SHELL      "-/bin/sh"
+/* "/bin/sh" */
+# define DEFAULT_SHELL              (bb_default_login_shell+1)
+/* "sh" */
+# define DEFAULT_SHELL_SHORT_NAME     (bb_default_login_shell+6)
+#endif
 
 /* The following devices are the same on all systems.  */
 #define CURRENT_TTY "/dev/tty"
 #define DEV_CONSOLE "/dev/console"
 
-#if defined(__FreeBSD_kernel__)
+#ifdef __BIONIC__
+# define CURRENT_VC CURRENT_TTY
+# define VC_1 "/dev/tty1"
+# define VC_2 "/dev/tty2"
+# define VC_3 "/dev/tty3"
+# define VC_4 "/dev/tty4"
+# define VC_5 "/dev/tty5"
+# define VC_FORMAT "/dev/tty%d"
+# define LOOP_FORMAT "/dev/block/loop%d"
+# define LOOP_NAMESIZE (sizeof("/dev/block/loop") + sizeof(int)*3 + 1)
+# define LOOP_NAME "/dev/block/loop"
+# define FB_0 "/dev/graphics/fb0"
+
+#elif defined(__FreeBSD_kernel__)
 # define CURRENT_VC CURRENT_TTY
 # define VC_1 "/dev/ttyv0"
 # define VC_2 "/dev/ttyv1"
@@ -1746,41 +1793,26 @@ extern const char bb_default_login_shell[];
 # define VC_4 "/dev/ttyv3"
 # define VC_5 "/dev/ttyv4"
 # define VC_FORMAT "/dev/ttyv%d"
-#elif defined(__GNU__)
+# define LOOP_FORMAT "/dev/loop%d"
+# define LOOP_NAMESIZE (sizeof("/dev/loop") + sizeof(int)*3 + 1)
+# define LOOP_NAME "/dev/loop"
+# define FB_0 "/dev/fb0"
+
+#else //__GNU__
+/*Linux 2.6, normal names */
 # define CURRENT_VC CURRENT_TTY
-# define VC_1 "/dev/tty1"
-# define VC_2 "/dev/tty2"
-# define VC_3 "/dev/tty3"
-# define VC_4 "/dev/tty4"
-# define VC_5 "/dev/tty5"
-# define VC_FORMAT "/dev/tty%d"
-#elif ENABLE_FEATURE_DEVFS
-/*Linux, obsolete devfs names */
-# define CURRENT_VC "/dev/vc/0"
-# define VC_1 "/dev/vc/1"
-# define VC_2 "/dev/vc/2"
-# define VC_3 "/dev/vc/3"
-# define VC_4 "/dev/vc/4"
-# define VC_5 "/dev/vc/5"
-# define VC_FORMAT "/dev/vc/%d"
-# define LOOP_FORMAT "/dev/loop/%d"
-# define LOOP_NAMESIZE (sizeof("/dev/loop/") + sizeof(int)*3 + 1)
-# define LOOP_NAME "/dev/loop/"
-# define FB_0 "/dev/fb/0"
-#else
-/*Linux, normal names */
-# define CURRENT_VC "/dev/tty0"
-# define VC_1 "/dev/tty1"
-# define VC_2 "/dev/tty2"
-# define VC_3 "/dev/tty3"
-# define VC_4 "/dev/tty4"
-# define VC_5 "/dev/tty5"
+# define VC_1 "/dev/tty0"
+# define VC_2 "/dev/tty1"
+# define VC_3 "/dev/tty2"
+# define VC_4 "/dev/tty3"
+# define VC_5 "/dev/tty4"
 # define VC_FORMAT "/dev/tty%d"
 # define LOOP_FORMAT "/dev/loop%d"
 # define LOOP_NAMESIZE (sizeof("/dev/loop") + sizeof(int)*3 + 1)
 # define LOOP_NAME "/dev/loop"
 # define FB_0 "/dev/fb0"
-#endif
+
+#endif //Platform
 
 
 #define ARRAY_SIZE(x) ((unsigned)(sizeof(x) / sizeof((x)[0])))

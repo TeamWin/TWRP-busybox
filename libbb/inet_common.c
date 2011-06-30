@@ -174,8 +174,8 @@ int FAST_FUNC INET6_resolve(const char *name, struct sockaddr_in6 *sin6)
 		bb_error_msg("getaddrinfo: %s: %d", name, s);
 		return -1;
 	}
-	memcpy(sin6, ai->ai_addr, sizeof(*sin6));
-	freeaddrinfo(ai);
+	memcpy(sin6, ai->ai_addr, sizeof(struct sockaddr_in6));
+	if (ai) freeaddrinfo(ai);
 	return 0;
 }
 

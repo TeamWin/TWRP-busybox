@@ -29,6 +29,22 @@
 #include <netinet/ip_icmp.h>
 #include "libbb.h"
 
+#ifdef __BIONIC__
+/* should be in netinet/ip_icmp.h */
+#define ICMP_DEST_UNREACH	3	/* Destination Unreachable	*/
+#define ICMP_SOURCE_QUENCH	4	/* Source Quench		*/
+#define ICMP_REDIRECT		5	/* Redirect (change route)	*/
+#define ICMP_ECHO		8	/* Echo Request			*/
+#define ICMP_TIME_EXCEEDED	11	/* Time Exceeded		*/
+#define ICMP_PARAMETERPROB	12	/* Parameter Problem		*/
+#define ICMP_TIMESTAMP		13	/* Timestamp Request		*/
+#define ICMP_TIMESTAMPREPLY	14	/* Timestamp Reply		*/
+#define ICMP_INFO_REQUEST	15	/* Information Request		*/
+#define ICMP_INFO_REPLY		16	/* Information Reply		*/
+#define ICMP_ADDRESS		17	/* Address Mask Request		*/
+#define ICMP_ADDRESSREPLY	18	/* Address Mask Reply		*/
+#endif
+
 //config:config PING
 //config:	bool "ping"
 //config:	default y
@@ -430,7 +446,7 @@ static void sendping_tail(void (*sp)(int), int size_pkt)
 	 * it doesn't matter */
 	sz = xsendto(pingsock, G.snd_packet, size_pkt, &pingaddr.sa, sizeof(pingaddr));
 	if (sz != size_pkt)
-		bb_error_msg_and_die(bb_msg_write_error);
+		bb_error_msg_and_die("%s", bb_msg_write_error);
 
 	if (pingcount == 0 || deadline || ntransmitted < pingcount) {
 		/* Didn't send all pings yet - schedule next in 1s */

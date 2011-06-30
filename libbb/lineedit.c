@@ -156,6 +156,13 @@ struct lineedit_statics {
 #if ENABLE_FEATURE_EDITING_ASK_TERMINAL
 	smallint sent_ESC_br6n;
 #endif
+
+	/* Formerly these were big buffers on stack: */
+#if ENABLE_FEATURE_TAB_COMPLETION
+	char input_tab__matchBuf[MAX_LINELEN];
+	int16_t find_match__int_buf[MAX_LINELEN + 1]; /* need to have 9 bits at least */
+	int16_t find_match__pos_buf[MAX_LINELEN + 1];
+#endif
 };
 
 /* See lineedit_ptr_hack.c */

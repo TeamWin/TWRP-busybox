@@ -3750,7 +3750,7 @@ setjobctl(int on)
 			}
 			if (pgrp == getpgrp())
 				break;
-			killpg(0, SIGTTIN);
+			killpg_busybox(0, SIGTTIN);
 		}
 		initialpgrp = pgrp;
 
@@ -3863,7 +3863,7 @@ restartjob(struct job *jp, int mode)
 	pgid = jp->ps[0].ps_pid;
 	if (mode == FORK_FG)
 		xtcsetpgrp(ttyfd, pgid);
-	killpg(pgid, SIGCONT);
+	killpg_busybox(pgid, SIGCONT);
 	ps = jp->ps;
 	i = jp->nprocs;
 	do {
@@ -3925,8 +3925,8 @@ sprint_status(char *s, int status, int sigonly)
 #endif
 		}
 		st &= 0x7f;
+		col = fmtstr(s, 32, "%s", strsignal(st));
 //TODO: use bbox's get_signame? strsignal adds ~600 bytes to text+rodata
-		col = fmtstr(s, 32, strsignal(st));
 		if (WCOREDUMP(status)) {
 			col += fmtstr(s + col, 16, " (core dumped)");
 		}

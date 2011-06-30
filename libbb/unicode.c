@@ -14,6 +14,12 @@
 uint8_t unicode_status;
 #endif
 
+#ifdef __BIONIC__
+# define VOID
+#else
+# define VOID void
+#endif
+
 /* This file is compiled only if UNICODE_SUPPORT is on.
  * We check other options and decide whether to use libc support
  * via locale, or use our own logic:
@@ -37,7 +43,7 @@ void FAST_FUNC reinit_unicode(const char *LANG)
 	unicode_status = (width == 1 ? UNICODE_ON : UNICODE_OFF);
 }
 
-void FAST_FUNC init_unicode(void)
+void FAST_FUNC init_unicode(VOID)
 {
 	if (unicode_status == UNICODE_UNKNOWN)
 		reinit_unicode(getenv("LANG"));
@@ -56,7 +62,7 @@ void FAST_FUNC reinit_unicode(const char *LANG)
 	unicode_status = UNICODE_ON;
 }
 
-void FAST_FUNC init_unicode(void)
+void FAST_FUNC init_unicode(VOID)
 {
 	if (unicode_status == UNICODE_UNKNOWN)
 		reinit_unicode(getenv("LANG"));
@@ -204,6 +210,8 @@ static const char *mbstowc_internal(wchar_t *res, const char *src)
 size_t FAST_FUNC mbstowcs(wchar_t *dest, const char *src, size_t n)
 {
 	size_t org_n = n;
+
+	if (!src) return 0;
 
 	if (unicode_status != UNICODE_ON) {
 		while (n) {
@@ -1006,9 +1014,11 @@ static char* FAST_FUNC unicode_conv_to_printable2(uni_stat_t *stats, const char 
 		} else {
 			d = dst = xstrndup(src, width);
 			while (*d) {
+#if !ENABLE_UNICODE_PRESERVE_BROKEN /* Unicode checks are not working in 1.19.0 but can be displayed if not filtered */
 				unsigned char c = *d;
 				if (c < ' ' || c >= 0x7f)
 					*d = '?';
+#endif
 				d++;
 			}
 		}

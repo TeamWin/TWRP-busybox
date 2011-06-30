@@ -172,7 +172,13 @@
 # define BB_BIG_ENDIAN 0
 # define BB_LITTLE_ENDIAN 1
 #else
-# error "Can't determine endianness"
+# error
+# error
+# error "Can't determine endianness !"
+# error "DO NOT USE 'MAKE' TO BUILD BIONIC BUSYBOX"
+# error
+# error
+  exit 1
 #endif
 
 #if ULONG_MAX > 0xffffffff
@@ -266,6 +272,7 @@ typedef unsigned smalluint;
 #if defined __GLIBC__ \
  || defined __UCLIBC__ \
  || defined __dietlibc__ \
+ || defined __BIONIC__ \
  || defined _NEWLIB_VERSION
 # include <features.h>
 #endif
@@ -419,6 +426,7 @@ typedef unsigned smalluint;
 
 #if defined(ANDROID)
 # undef HAVE_DPRINTF
+# undef HAVE_FDPRINTF
 # undef HAVE_GETLINE
 # undef HAVE_STPCPY
 # undef HAVE_STRCHRNUL
@@ -479,8 +487,14 @@ extern int vasprintf(char **string_ptr, const char *format, va_list p) FAST_FUNC
 #endif
 
 #ifndef HAVE_GETLINE
-#include <stdio.h> /* for FILE */
+# include <stdio.h> /* for FILE */
+# include <sys/types.h> /* size_t */
 extern ssize_t getline(char **lineptr, size_t *n, FILE *stream) FAST_FUNC;
 #endif
 
+#if defined(__BIONIC__)
+#include "android.h"
 #endif
+
+
+#endif /* BB_PLATFORM_H */

@@ -175,8 +175,9 @@ int depmod_main(int argc UNUSED_PARAM, char **argv)
 {
 	module_info *modules, *m, *dep;
 	const char *moddir_base = "/";
-	char *moddir, *version;
+	char *version;
 	struct utsname uts;
+	struct stat info;
 	int tmp;
 
 	getopt32(argv, "aAb:eF:nruqC:", &moddir_base, NULL, NULL);
@@ -194,10 +195,10 @@ int depmod_main(int argc UNUSED_PARAM, char **argv)
 		uname(&uts);
 		version = uts.release;
 	}
-	moddir = concat_path_file(&CONFIG_DEFAULT_MODULES_DIR[1], version);
-	xchdir(moddir);
-	if (ENABLE_FEATURE_CLEAN_UP)
-		free(moddir);
+	xchdir(&CONFIG_DEFAULT_MODULES_DIR[1]);
+	if (stat(version, &info) == 0) {
+		xchdir(version);
+	}
 
 	/* Scan modules */
 	modules = NULL;

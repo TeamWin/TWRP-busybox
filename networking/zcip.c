@@ -471,7 +471,7 @@ int zcip_main(int argc UNUSED_PARAM, char **argv)
 
 			// read ARP packet
 			if (safe_read(sock_fd, &p, sizeof(p)) < 0) {
-				bb_perror_msg_and_die(bb_msg_read_error);
+				bb_perror_msg_and_die("%s",bb_msg_read_error);
 			}
 			if (p.eth.ether_type != htons(ETHERTYPE_ARP))
 				continue;

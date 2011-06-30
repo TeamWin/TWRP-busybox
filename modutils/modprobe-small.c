@@ -749,6 +749,7 @@ int modprobe_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int modprobe_main(int argc UNUSED_PARAM, char **argv)
 {
 	struct utsname uts;
+	struct stat info;
 	char applet0 = applet_name[0];
 	IF_FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE(char *options;)
 
@@ -763,7 +764,7 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 	/* Prevent ugly corner cases with no modules at all */
 	modinfo = xzalloc(sizeof(modinfo[0]));
 
-	if ('i' != applet0) { /* not insmod */
+	if ('i' != applet0 && 'r' != applet0) { /* not insmod and not rmmod */
 		/* Goto modules directory */
 		xchdir(CONFIG_DEFAULT_MODULES_DIR);
 	}
@@ -793,8 +794,14 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 		getopt32(argv, "na" "AeF:qru" /* "b:vV", NULL */, NULL);
 		argv += optind;
 		/* if (argv[0] && argv[1]) bb_show_usage(); */
-		/* Goto $VERSION directory */
-		xchdir(argv[0] ? argv[0] : uts.release);
+		if (argv[0]) {
+			xchdir(argv[0]);
+		} else {
+			if (stat(uts.release, &info) == 0) {
+				/* Goto $VERSION directory */
+				xchdir(uts.release);
+			}
+		}
 		/* Force full module scan by asking to find a bogus module.
 		 * This will generate modules.dep.bb as a side effect. */
 		process_module((char*)"/", NULL);
@@ -813,9 +820,11 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
 		option_mask32 |= OPT_r;
 	}
 
-	if ('i' != applet0) { /* not insmod */
-		/* Goto $VERSION directory */
-		xchdir(uts.release);
+	if ('i' != applet0 && 'r' != applet0) { /* not insmod and not rmmod */
+		if (stat(uts.release, &info) == 0) {
+			/* Goto $VERSION directory */
+			xchdir(uts.release);
+		}
 	}
 
 #if ENABLE_FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE

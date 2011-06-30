@@ -161,7 +161,13 @@
 //usage:	)
 //usage:     "\n	-H	Short help regarding available features"
 
-#include <regex.h>
+#if ENABLE_FEATURE_VI_REGEX_SEARCH
+# if defined(ANDROID)
+#  include <sys/types.h> /* size_t */
+# endif
+# include <regex.h>
+#endif
+
 #include "libbb.h"
 
 /* the CRASHME code is unmaintained, and doesn't currently build */

@@ -6,9 +6,8 @@
  *
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
-#include "busybox.h"
-
 #if ENABLE_BUILD_LIBBUSYBOX
+#include "busybox.h"
 int main(int argc UNUSED_PARAM, char **argv)
 {
 	return lbb_main(argv);

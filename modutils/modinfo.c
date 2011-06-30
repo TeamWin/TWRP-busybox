@@ -58,7 +58,7 @@ static void modinfo(const char *path, const char *version,
 	};
 	size_t len;
 	int j, length;
-	char *ptr, *the_module;
+	char *ptr, *fullpath, *the_module;
 	const char *field = env->field;
 	int tags = env->tags;
 
@@ -72,11 +72,18 @@ static void modinfo(const char *path, const char *version,
 		if (path[0] == '/')
 			return;
 		/* Newer depmod puts relative paths in modules.dep */
-		path = xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, version, path);
-		the_module = xmalloc_open_zipped_read_close(path, &len);
-		free((char*)path);
-		if (!the_module)
+		fullpath = xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, version, path);
+		the_module = xmalloc_open_zipped_read_close(fullpath, &len);
+		if (!the_module) {
+			fullpath = xasprintf("%s/%s", CONFIG_DEFAULT_MODULES_DIR, path);
+			the_module = xmalloc_open_zipped_read_close(fullpath, &len);
+		}
+		free((char*)fullpath);
+		if (!the_module) {
+			// outputs system error msg
+			bb_perror_msg("");
 			return;
+		}
 	}
 
 	if (field)
@@ -137,8 +144,14 @@ int modinfo_main(int argc UNUSED_PARAM, char **argv)
 	uname(&uts);
 	parser = config_open2(
 		xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, uts.release, CONFIG_DEFAULT_DEPMOD_FILE),
-		xfopen_for_read
+		fopen_for_read
 	);
+	if (!parser) {
+		parser = config_open2(
+			xasprintf("%s/%s", CONFIG_DEFAULT_MODULES_DIR, CONFIG_DEFAULT_DEPMOD_FILE),
+			xfopen_for_read
+		);
+	}
 
 	while (config_read(parser, tokens, 2, 1, "# \t", PARSE_NORMAL)) {
 		colon = last_char_is(tokens[0], ':');

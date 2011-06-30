@@ -1,8 +1,8 @@
 VERSION = 1
 PATCHLEVEL = 19
 SUBLEVEL = 0
-EXTRAVERSION = .git
-NAME = Unnamed
+EXTRAVERSION = -cm71
+NAME = bionic
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
@@ -1342,6 +1342,11 @@ endif	# skip-makefile
 
 PHONY += FORCE
 FORCE:
+
+show-sources:
+	@for f in $(busybox-dirs) ; do \
+		$(MAKE) $(build)=$$f show-src ; \
+	done
 
 -include $(srctree)/Makefile.custom
 

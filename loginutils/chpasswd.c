@@ -38,7 +38,7 @@ int chpasswd_main(int argc UNUSED_PARAM, char **argv)
 	int opt, rc;
 
 	if (getuid() != 0)
-		bb_error_msg_and_die(bb_msg_perm_denied_are_you_root);
+		bb_error_msg_and_die("%s", bb_msg_perm_denied_are_you_root);
 
 	opt_complementary = "m--e:e--m";
 	IF_LONG_OPTS(applet_long_options = chpasswd_longopts;)

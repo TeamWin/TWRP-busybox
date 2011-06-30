@@ -693,9 +693,11 @@ static bool diff(FILE* fp[2], char *file[2])
 
 static int diffreg(char *file[2])
 {
-	FILE *fp[2] = { stdin, stdin };
+	FILE *fp[2];
 	bool binary = false, differ = false;
 	int status = STATUS_SAME, i;
+	fp[0] = stdin;
+	fp[1] = stdin;
 
 	for (i = 0; i < 2; i++) {
 		int fd = open_or_warn_stdin(file[i]);
@@ -705,9 +707,13 @@ static int diffreg(char *file[2])
 		 * When we meet non-seekable file, we must make a temp copy.
 		 */
 		if (lseek(fd, 0, SEEK_SET) == -1 && errno == ESPIPE) {
-			char name[] = "/tmp/difXXXXXX";
+			/* really should use $TMPDIR, but not usually set on android anyway */
+			char name[] = 
+#ifdef __BIONIC__
+				"/data/local"
+#endif
+				"/tmp/difXXXXXX";
 			int fd_tmp = xmkstemp(name);
-
 			unlink(name);
 			if (bb_copyfd_eof(fd, fd_tmp) < 0)
 				xfunc_die();

@@ -272,8 +272,13 @@
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
 #if ENABLE_FEATURE_IPV6
-# include <netinet/ip6.h>
-# include <netinet/icmp6.h>
+# ifdef __BIONIC__
+#  include "ipv6/ip6.h"
+#  include "ipv6/icmp6.h"
+# else
+#  include <netinet/ip6.h>
+#  include <netinet/icmp6.h>
+# endif
 # ifndef SOL_IPV6
 #  define SOL_IPV6 IPPROTO_IPV6
 # endif
@@ -883,7 +888,7 @@ common_traceroute_main(int op, char **argv)
 		 * probe (e.g., on a multi-homed host).
 		 */
 		if (getuid() != 0)
-			bb_error_msg_and_die(bb_msg_you_must_be_root);
+			bb_error_msg_and_die("%s", bb_msg_you_must_be_root);
 	}
 	if (op & OPT_WAITTIME)
 		waittime = xatou_range(waittime_str, 1, 24 * 60 * 60);
