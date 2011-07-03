@@ -161,14 +161,11 @@
 //usage:	)
 //usage:     "\n	-H	Short help regarding available features"
 
+#include "libbb.h"
+/* Should be after libbb.h: on some systems regex.h needs sys/types.h: */
 #if ENABLE_FEATURE_VI_REGEX_SEARCH
-# if defined(ANDROID)
-#  include <sys/types.h> /* size_t */
-# endif
 # include <regex.h>
 #endif
-
-#include "libbb.h"
 
 /* the CRASHME code is unmaintained, and doesn't currently build */
 #define ENABLE_FEATURE_VI_CRASHME 0
@@ -187,9 +184,9 @@
 
 /* 0x9b is Meta-ESC */
 #if ENABLE_FEATURE_VI_8BIT
-#define Isprint(c) ((unsigned char)(c) >= ' ' && (c) != 0x7f && (unsigned char)(c) != 0x9b)
+# define Isprint(c) ((unsigned char)(c) >= ' ' && (c) != 0x7f && (unsigned char)(c) != 0x9b)
 #else
-#define Isprint(c) ((unsigned char)(c) >= ' ' && (unsigned char)(c) < 0x7f)
+# define Isprint(c) ((unsigned char)(c) >= ' ' && (unsigned char)(c) < 0x7f)
 #endif
 
 #endif
