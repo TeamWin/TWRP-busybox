@@ -13,7 +13,7 @@ Config.in
 # Never ignore these
 #
 !.gitignore
-!.config*
+!.config-*
 
 #
 # Normal output
