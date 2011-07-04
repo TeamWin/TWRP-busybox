@@ -707,7 +707,9 @@ static int diffreg(char *file[2])
 		 * When we meet non-seekable file, we must make a temp copy.
 		 */
 		if (lseek(fd, 0, SEEK_SET) == -1 && errno == ESPIPE) {
-			/* really should use $TMPDIR, but not usually set on android anyway */
+			/* really should use $TMPDIR, but not usually set on android anyway
+			   here with ifdef, android will use "/data/local/tmp/difXXXXXX"
+			 */
 			char name[] = 
 #ifdef __BIONIC__
 				"/data/local"
