@@ -140,7 +140,7 @@ void FAST_FUNC encode_base64(char *fname, const char *text, const char *eol)
 		if (fname) {
 			size = fread((char *)src_buf, 1, SRC_BUF_SIZE, fp);
 			if ((ssize_t)size < 0)
-				bb_perror_msg_and_die("%s", bb_msg_read_error);
+				bb_perror_msg_and_die(bb_msg_read_error);
 		} else {
 			size = len;
 			if (len > SRC_BUF_SIZE)

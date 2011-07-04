@@ -462,7 +462,7 @@ static char *get_logname(void)
 			if (read(STDIN_FILENO, &c, 1) < 1) {
 				if (errno == EINTR || errno == EIO)
 					exit(EXIT_SUCCESS);
-				bb_perror_msg_and_die("%s", bb_msg_read_error);
+				bb_perror_msg_and_die(bb_msg_read_error);
 			}
 
 			/* BREAK. If we have speeds to try,

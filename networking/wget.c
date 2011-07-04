@@ -504,7 +504,7 @@ static void NOINLINE retrieve_file_data(FILE *dfp)
 					continue; /* yes */
 #endif
 				if (ferror(dfp))
-					bb_perror_msg_and_die("%s", bb_msg_read_error);
+					bb_perror_msg_and_die(bb_msg_read_error);
 				break; /* EOF, not error */
 			}
 
