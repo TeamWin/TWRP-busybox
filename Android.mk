@@ -47,7 +47,9 @@ BUSYBOX_CFLAGS = \
 	-D'CONFIG_DEFAULT_MODULES_DIR="$(KERNEL_MODULES_DIR)"' \
 	-D'BB_VER="$(strip $(shell $(SUBMAKE) kernelversion)) $(BUSYBOX_SUFFIX)"' -DBB_BT=AUTOCONF_TIMESTAMP
 
-# execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
+
+# Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
+
 include $(CLEAR_VARS)
 BUSYBOX_CONFIG := full minimal
 $(BUSYBOX_CONFIG):
@@ -55,9 +57,12 @@ $(BUSYBOX_CONFIG):
 	@cd $(LOCAL_PATH) && make clean
 	cp $(LOCAL_PATH)/.config-$@ $(LOCAL_PATH)/.config
 	cd $(LOCAL_PATH) && make prepare
-	cd $(LOCAL_PATH)/include-$@ && ./copy-current.sh
-	cd $(LOCAL_PATH)/include && rm usage_compressed.h
-	cd $(LOCAL_PATH)
+	@#cp $(LOCAL_PATH)/.config $(LOCAL_PATH)/.config-$@
+	@mkdir -p $(LOCAL_PATH)/include-$@
+	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
+	@rm $(LOCAL_PATH)/include/usage_compressed.h
+	@rm $(LOCAL_PATH)/.config
+
 busybox_prepare: $(BUSYBOX_CONFIG)
 LOCAL_MODULE := busybox_prepare
 LOCAL_MODULE_TAGS := eng
