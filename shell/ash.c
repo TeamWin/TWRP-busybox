@@ -1296,7 +1296,7 @@ ckrealloc(void * p, size_t nbytes)
 {
 	p = realloc(p, nbytes);
 	if (!p)
-		ash_msg_and_raise_error(bb_msg_memory_exhausted);
+		ash_msg_and_raise_error("%s", bb_msg_memory_exhausted);
 	return p;
 }
 
@@ -1317,7 +1317,7 @@ ckstrdup(const char *s)
 {
 	char *p = strdup(s);
 	if (!p)
-		ash_msg_and_raise_error(bb_msg_memory_exhausted);
+		ash_msg_and_raise_error("%s", bb_msg_memory_exhausted);
 	return p;
 }
 #else
@@ -1412,7 +1412,7 @@ stalloc(size_t nbytes)
 			blocksize = MINSIZE;
 		len = sizeof(struct stack_block) - MINSIZE + blocksize;
 		if (len < blocksize)
-			ash_msg_and_raise_error(bb_msg_memory_exhausted);
+			ash_msg_and_raise_error("%s", bb_msg_memory_exhausted);
 		INT_OFF;
 		sp = ckmalloc(len);
 		sp->prev = g_stackp;
@@ -1504,7 +1504,7 @@ growstackblock(void)
 
 	newlen = g_stacknleft * 2;
 	if (newlen < g_stacknleft)
-		ash_msg_and_raise_error(bb_msg_memory_exhausted);
+		ash_msg_and_raise_error("%s", bb_msg_memory_exhausted);
 	if (newlen < 128)
 		newlen += 128;
 

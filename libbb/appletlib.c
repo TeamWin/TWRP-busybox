@@ -34,6 +34,7 @@
 # include <malloc.h> /* for mallopt */
 #endif
 
+
 /* Declare <applet>_main() */
 #define PROTOTYPES
 #include "applets.h"
