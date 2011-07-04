@@ -39,10 +39,9 @@ BUSYBOX_C_INCLUDES = \
 	libc/kernel/common
 
 BUSYBOX_CFLAGS = \
-	-std=gnu99 \
 	-Werror=implicit \
 	-DNDEBUG \
-	-DANDROID_CHANGES \
+	-DANDROID \
 	-include include-$(BUSYBOX_CONFIG)/autoconf.h \
 	-D'CONFIG_DEFAULT_MODULES_DIR="$(KERNEL_MODULES_DIR)"' \
 	-D'BB_VER="$(strip $(shell $(SUBMAKE) kernelversion)) $(BUSYBOX_SUFFIX)"' -DBB_BT=AUTOCONF_TIMESTAMP
