@@ -63,6 +63,31 @@ LOCAL_MODULE := busybox_prepare
 LOCAL_MODULE_TAGS := eng
 include $(BUILD_STATIC_LIBRARY)
 
+
+# Build the static lib for the recovery tool
+
+include $(CLEAR_VARS)
+BUSYBOX_CONFIG:=minimal
+BUSYBOX_SUFFIX:=static
+LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
+LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
+LOCAL_CFLAGS := -Dmain=busybox_driver $(BUSYBOX_CFLAGS)
+LOCAL_CFLAGS += \
+  -Dgetusershell=busybox_getusershell \
+  -Dsetusershell=busybox_setusershell \
+  -Dendusershell=busybox_endusershell \
+  -Dttyname_r=busybox_ttyname_r \
+  -Dgetmntent=busybox_getmntent \
+  -Dgetmntent_r=busybox_getmntent_r \
+  -Dgenerate_uuid=busybox_generate_uuid
+LOCAL_MODULE := libbusybox
+LOCAL_MODULE_TAGS := eng
+LOCAL_STATIC_LIBRARIES += busybox_prepare libclearsilverregex libcutils libc libm
+include $(BUILD_STATIC_LIBRARY)
+
+
+# Bionic Busybox /system/xbin
+
 include $(CLEAR_VARS)
 BUSYBOX_CONFIG:=full
 BUSYBOX_SUFFIX:=bionic
@@ -93,26 +118,6 @@ ALL_DEFAULT_INSTALLED_MODULES += $(SYMLINKS)
 ALL_MODULES.$(LOCAL_MODULE).INSTALLED := \
     $(ALL_MODULES.$(LOCAL_MODULE).INSTALLED) $(SYMLINKS)
 
-# Build a static busybox for the recovery image
-include $(CLEAR_VARS)
-BUSYBOX_CONFIG:=minimal
-BUSYBOX_SUFFIX:=static
-LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
-LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
-LOCAL_CFLAGS := -Dmain=busybox_driver $(BUSYBOX_CFLAGS)
-LOCAL_CFLAGS += \
-  -Dgetusershell=busybox_getusershell \
-  -Dsetusershell=busybox_setusershell \
-  -Dendusershell=busybox_endusershell \
-  -Dttyname_r=busybox_ttyname_r \
-  -Dgetmntent=busybox_getmntent \
-  -Dgetmntent_r=busybox_getmntent_r \
-  -Dgenerate_uuid=busybox_generate_uuid
-LOCAL_MODULE := libbusybox
-LOCAL_MODULE_TAGS := eng
-LOCAL_STATIC_LIBRARIES += busybox_prepare libclearsilverregex libcutils libc libm
-include $(BUILD_STATIC_LIBRARY)
-
 
 # Build a static busybox (sample, no more used)
 ifeq (1,0)
@@ -136,9 +141,10 @@ LOCAL_MODULE := bootmenu_busybox
 LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_LIBRARIES += libclearsilverregex libcutils libc libm
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
-LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bootmenu/binary
+# LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bootmenu/binary
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
 LOCAL_MODULE_STEM := busybox
 include $(BUILD_EXECUTABLE)
 
 endif
+
