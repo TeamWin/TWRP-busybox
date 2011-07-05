@@ -31,6 +31,7 @@ endif
 BUSYBOX_C_INCLUDES = \
 	$(LOCAL_PATH)/include-$(BUSYBOX_CONFIG) \
 	$(LOCAL_PATH)/include $(LOCAL_PATH)/libbb \
+	$(LOCAL_PATH)/include \
 	external/clearsilver \
 	external/clearsilver/util/regex \
 	bionic/libc/private \
