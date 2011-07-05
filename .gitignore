@@ -37,9 +37,3 @@ Config.in
 core
 .gdb_history
 .gdbinit
-
-#
-# Android stuff
-#
-include-full/*.h
-include-minimal/*.h
