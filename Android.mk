@@ -1,5 +1,27 @@
 LOCAL_PATH := $(call my-dir)
 
+# Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
+
+include $(CLEAR_VARS)
+BUSYBOX_CONFIG := full minimal
+$(BUSYBOX_CONFIG):
+	@echo GENERATE INCLUDES FOR BUSYBOX $@
+	@cd $(LOCAL_PATH) && make clean
+	cp $(LOCAL_PATH)/.config-$@ $(LOCAL_PATH)/.config
+	cd $(LOCAL_PATH) && make prepare
+	@#cp $(LOCAL_PATH)/.config $(LOCAL_PATH)/.config-$@
+	@mkdir -p $(LOCAL_PATH)/include-$@
+	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
+	@rm $(LOCAL_PATH)/include/usage_compressed.h
+	@rm $(LOCAL_PATH)/.config
+
+busybox_prepare: $(BUSYBOX_CONFIG)
+LOCAL_MODULE := busybox_prepare
+LOCAL_MODULE_TAGS := eng
+include $(BUILD_STATIC_LIBRARY)
+
+
+
 # Make a static library for clearsilver's regex.
 # This prevents multiple symbol definition error....
 include $(CLEAR_VARS)
@@ -9,6 +31,7 @@ LOCAL_C_INCLUDES := \
 	external/clearsilver \
  	external/clearsilver/util/regex
 include $(BUILD_STATIC_LIBRARY)
+
 
 
 SUBMAKE := make -s -C $(LOCAL_PATH) CC=$(CC) 
@@ -47,26 +70,6 @@ BUSYBOX_CFLAGS = \
 	-D'CONFIG_DEFAULT_MODULES_DIR="$(KERNEL_MODULES_DIR)"' \
 	-D'BB_VER="$(strip $(shell $(SUBMAKE) kernelversion)) $(BUSYBOX_SUFFIX)"' -DBB_BT=AUTOCONF_TIMESTAMP
 
-
-# Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
-
-include $(CLEAR_VARS)
-BUSYBOX_CONFIG := full minimal
-$(BUSYBOX_CONFIG):
-	@echo GENERATE INCLUDES FOR BUSYBOX $@
-	@cd $(LOCAL_PATH) && make clean
-	cp $(LOCAL_PATH)/.config-$@ $(LOCAL_PATH)/.config
-	cd $(LOCAL_PATH) && make prepare
-	@#cp $(LOCAL_PATH)/.config $(LOCAL_PATH)/.config-$@
-	@mkdir -p $(LOCAL_PATH)/include-$@
-	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
-	@rm $(LOCAL_PATH)/include/usage_compressed.h
-	@rm $(LOCAL_PATH)/.config
-
-busybox_prepare: $(BUSYBOX_CONFIG)
-LOCAL_MODULE := busybox_prepare
-LOCAL_MODULE_TAGS := eng
-include $(BUILD_STATIC_LIBRARY)
 
 
 # Build the static lib for the recovery tool
