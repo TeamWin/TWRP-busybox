@@ -699,6 +699,8 @@ static int diffreg(char *file[2])
 	fp[0] = stdin;
 	fp[1] = stdin;
 
+	fp[0] = stdin;
+	fp[1] = stdin;
 	for (i = 0; i < 2; i++) {
 		int fd = open_or_warn_stdin(file[i]);
 		if (fd == -1)
