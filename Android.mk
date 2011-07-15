@@ -1,9 +1,23 @@
 LOCAL_PATH := $(call my-dir)
 
+
+# Make a static library for clearsilver's regex.
+# This prevents multiple symbol definition error....
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := ../clearsilver/util/regex/regex.c
+LOCAL_MODULE := libclearsilverregex
+LOCAL_C_INCLUDES := \
+        external/clearsilver \
+        external/clearsilver/util/regex
+include $(BUILD_STATIC_LIBRARY)
+
+
+
 # Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
 
 include $(CLEAR_VARS)
-BUSYBOX_CONFIG := full minimal
+KERNEL_MODULES_DIR ?= /system/lib/modules
+BUSYBOX_CONFIG := minimal full
 $(BUSYBOX_CONFIG):
 	@echo GENERATE INCLUDES FOR BUSYBOX $@
 	@cd $(LOCAL_PATH) && make clean
@@ -13,7 +27,7 @@ $(BUSYBOX_CONFIG):
 	@mkdir -p $(LOCAL_PATH)/include-$@
 	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
 	@rm $(LOCAL_PATH)/include/usage_compressed.h
-	@rm $(LOCAL_PATH)/.config
+	@rm -f $(LOCAL_PATH)/.config-old
 
 busybox_prepare: $(BUSYBOX_CONFIG)
 LOCAL_MODULE := busybox_prepare
@@ -21,22 +35,11 @@ LOCAL_MODULE_TAGS := eng
 include $(BUILD_STATIC_LIBRARY)
 
 
-
-# Make a static library for clearsilver's regex.
-# This prevents multiple symbol definition error....
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := ../clearsilver/util/regex/regex.c
-LOCAL_MODULE := libclearsilverregex
-LOCAL_C_INCLUDES := \
-	external/clearsilver \
- 	external/clearsilver/util/regex
-include $(BUILD_STATIC_LIBRARY)
 
+KERNEL_MODULES_DIR ?= /system/lib/modules
 
-
-SUBMAKE := make -s -C $(LOCAL_PATH) CC=$(CC) 
-
-KERNEL_MODULES_DIR?=/system/lib/modules
+SUBMAKE := make -s -C $(LOCAL_PATH) CC=$(CC)
 
 BUSYBOX_SRC_FILES = $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).sources) \
 	libbb/android.c
@@ -73,7 +76,6 @@ BUSYBOX_CFLAGS = \
 
 # Build the static lib for the recovery tool
 
-include $(CLEAR_VARS)
 BUSYBOX_CONFIG:=minimal
 BUSYBOX_SUFFIX:=static
 LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
