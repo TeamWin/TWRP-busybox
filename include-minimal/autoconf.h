@@ -2,7 +2,7 @@
  * Automatically generated C config: don't edit
  * Busybox version: 1.19.0-cm71
  */
-#define AUTOCONF_TIMESTAMP "2011-07-25 20:52 +0200"
+#define AUTOCONF_TIMESTAMP "2011-08-10 06:15 +0200"
 
 #define CONFIG_HAVE_DOT_CONFIG 1
 #define ENABLE_HAVE_DOT_CONFIG 1
@@ -612,6 +612,14 @@
 #define ENABLE_BASE64 1
 #define IF_BASE64(...) __VA_ARGS__
 #define IF_NOT_BASE64(...)
+#undef CONFIG_WHO
+#define ENABLE_WHO 0
+#define IF_WHO(...)
+#define IF_NOT_WHO(...) __VA_ARGS__
+#undef CONFIG_USERS
+#define ENABLE_USERS 0
+#define IF_USERS(...)
+#define IF_NOT_USERS(...) __VA_ARGS__
 #define CONFIG_CAL 1
 #define ENABLE_CAL 1
 #define IF_CAL(...) __VA_ARGS__
@@ -1016,10 +1024,6 @@
 #define ENABLE_FEATURE_WC_LARGE 0
 #define IF_FEATURE_WC_LARGE(...)
 #define IF_NOT_FEATURE_WC_LARGE(...) __VA_ARGS__
-#undef CONFIG_WHO
-#define ENABLE_WHO 0
-#define IF_WHO(...)
-#define IF_NOT_WHO(...) __VA_ARGS__
 #define CONFIG_WHOAMI 1
 #define ENABLE_WHOAMI 1
 #define IF_WHOAMI(...) __VA_ARGS__
@@ -3144,6 +3148,14 @@
 #define ENABLE_SMEMCAP 0
 #define IF_SMEMCAP(...)
 #define IF_NOT_SMEMCAP(...) __VA_ARGS__
+#define CONFIG_UPTIME 1
+#define ENABLE_UPTIME 1
+#define IF_UPTIME(...) __VA_ARGS__
+#define IF_NOT_UPTIME(...)
+#undef CONFIG_FEATURE_UPTIME_UTMP_SUPPORT
+#define ENABLE_FEATURE_UPTIME_UTMP_SUPPORT 0
+#define IF_FEATURE_UPTIME_UTMP_SUPPORT(...)
+#define IF_NOT_FEATURE_UPTIME_UTMP_SUPPORT(...) __VA_ARGS__
 #define CONFIG_FREE 1
 #define ENABLE_FREE 1
 #define IF_FREE(...) __VA_ARGS__
@@ -3244,10 +3256,6 @@
 #define ENABLE_FEATURE_SHOW_THREADS 1
 #define IF_FEATURE_SHOW_THREADS(...) __VA_ARGS__
 #define IF_NOT_FEATURE_SHOW_THREADS(...)
-#define CONFIG_UPTIME 1
-#define ENABLE_UPTIME 1
-#define IF_UPTIME(...) __VA_ARGS__
-#define IF_NOT_UPTIME(...)
 #define CONFIG_WATCH 1
 #define ENABLE_WATCH 1
 #define IF_WATCH(...) __VA_ARGS__
