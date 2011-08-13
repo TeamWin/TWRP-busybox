@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.19.0-cm71
-# Wed Aug 10 06:15:46 2011
+# Sat Aug 13 21:19:08 2011
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -321,9 +321,9 @@ CONFIG_CLEAR=y
 # CONFIG_LOADKMAP is not set
 # CONFIG_OPENVT is not set
 CONFIG_RESET=y
-# CONFIG_RESIZE is not set
+CONFIG_RESIZE=y
 # CONFIG_FEATURE_RESIZE_PRINT is not set
-# CONFIG_SETCONSOLE is not set
+CONFIG_SETCONSOLE=y
 # CONFIG_FEATURE_SETCONSOLE_LONG_OPTIONS is not set
 # CONFIG_SETFONT is not set
 # CONFIG_FEATURE_SETFONT_TEXTUAL_MAP is not set

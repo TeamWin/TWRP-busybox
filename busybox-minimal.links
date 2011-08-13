@@ -104,6 +104,7 @@
 /bin/realpath
 /bin/renice
 /bin/reset
+/bin/resize
 /bin/rev
 /bin/rm
 /bin/rmdir
@@ -111,6 +112,7 @@
 /bin/run-parts
 /bin/sed
 /bin/seq
+/sbin/setconsole
 /bin/setserial
 /bin/setsid
 /bin/sh
