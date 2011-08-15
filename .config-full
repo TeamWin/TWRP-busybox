@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.19.0-cm71
-# Sat Aug 13 21:20:03 2011
+# Mon Aug 15 16:46:46 2011
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -577,14 +577,14 @@ CONFIG_FEATURE_MOUNT_FSTAB=y
 # CONFIG_PIVOT_ROOT is not set
 # CONFIG_RDATE is not set
 CONFIG_RDEV=y
-# CONFIG_READPROFILE is not set
+CONFIG_READPROFILE=y
 # CONFIG_RTCWAKE is not set
 # CONFIG_SCRIPT is not set
 # CONFIG_SCRIPTREPLAY is not set
 # CONFIG_SETARCH is not set
 CONFIG_SWAPONOFF=y
 # CONFIG_FEATURE_SWAPON_PRI is not set
-CONFIG_SWITCH_ROOT=y
+# CONFIG_SWITCH_ROOT is not set
 CONFIG_UMOUNT=y
 CONFIG_FEATURE_UMOUNT_ALL=y
 

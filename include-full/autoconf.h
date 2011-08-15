@@ -2,7 +2,7 @@
  * Automatically generated C config: don't edit
  * Busybox version: 1.19.0-cm71
  */
-#define AUTOCONF_TIMESTAMP "2011-08-13 21:20 +0200"
+#define AUTOCONF_TIMESTAMP "2011-08-15 16:49 +0200"
 
 #define CONFIG_HAVE_DOT_CONFIG 1
 #define ENABLE_HAVE_DOT_CONFIG 1
@@ -2024,10 +2024,10 @@
 #define ENABLE_RDEV 1
 #define IF_RDEV(...) __VA_ARGS__
 #define IF_NOT_RDEV(...)
-#undef CONFIG_READPROFILE
-#define ENABLE_READPROFILE 0
-#define IF_READPROFILE(...)
-#define IF_NOT_READPROFILE(...) __VA_ARGS__
+#define CONFIG_READPROFILE 1
+#define ENABLE_READPROFILE 1
+#define IF_READPROFILE(...) __VA_ARGS__
+#define IF_NOT_READPROFILE(...)
 #undef CONFIG_RTCWAKE
 #define ENABLE_RTCWAKE 0
 #define IF_RTCWAKE(...)
@@ -2052,10 +2052,10 @@
 #define ENABLE_FEATURE_SWAPON_PRI 0
 #define IF_FEATURE_SWAPON_PRI(...)
 #define IF_NOT_FEATURE_SWAPON_PRI(...) __VA_ARGS__
-#define CONFIG_SWITCH_ROOT 1
-#define ENABLE_SWITCH_ROOT 1
-#define IF_SWITCH_ROOT(...) __VA_ARGS__
-#define IF_NOT_SWITCH_ROOT(...)
+#undef CONFIG_SWITCH_ROOT
+#define ENABLE_SWITCH_ROOT 0
+#define IF_SWITCH_ROOT(...)
+#define IF_NOT_SWITCH_ROOT(...) __VA_ARGS__
 #define CONFIG_UMOUNT 1
 #define ENABLE_UMOUNT 1
 #define IF_UMOUNT(...) __VA_ARGS__
