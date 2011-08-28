@@ -11,8 +11,6 @@ LOCAL_C_INCLUDES := \
         external/clearsilver/util/regex
 include $(BUILD_STATIC_LIBRARY)
 
-
-
 # Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
 
 include $(CLEAR_VARS)
@@ -28,6 +26,7 @@ $(BUSYBOX_CONFIG):
 	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
 	@rm $(LOCAL_PATH)/include/usage_compressed.h
 	@rm -f $(LOCAL_PATH)/.config-old
+	@cp $(ANDROID_BUILD_TOP)/system/core/toolbox/reboot.c $(LOCAL_PATH)/android/reboot.c
 
 busybox_prepare: $(BUSYBOX_CONFIG)
 LOCAL_MODULE := busybox_prepare
@@ -107,6 +106,8 @@ LOCAL_MODULE := busybox
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 LOCAL_STATIC_LIBRARIES += busybox_prepare libclearsilverregex
+LOCAL_STATIC_LIBRARIES += libreboot
+LOCAL_CFLAGS += -DCYANOGEN_LIBREBOOT
 include $(BUILD_EXECUTABLE)
 
 BUSYBOX_LINKS := $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).links)
