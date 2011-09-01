@@ -49,6 +49,9 @@
 /sbin/fdisk
 /bin/fgrep
 /bin/find
+/sbin/flashcp
+/sbin/flash_unlock
+/sbin/flash_lock
 /bin/flock
 /bin/fold
 /bin/free
@@ -86,7 +89,9 @@
 /bin/lzma
 /bin/lzop
 /bin/lzopcat
+/sbin/man
 /bin/md5sum
+/bin/mesg
 /bin/mkdir
 /sbin/mke2fs
 /bin/mkfifo
@@ -174,6 +179,7 @@
 /bin/traceroute
 /bin/true
 /bin/tty
+/bin/ttysize
 /sbin/tune2fs
 /bin/umount
 /bin/uname
