@@ -129,8 +129,7 @@ ALL_MODULES.$(LOCAL_MODULE).INSTALLED := \
     $(ALL_MODULES.$(LOCAL_MODULE).INSTALLED) $(SYMLINKS)
 
 
-# Build a static busybox (sample, no more used)
-ifeq (1,0)
+# Static Busybox
 
 include $(CLEAR_VARS)
 BUSYBOX_CONFIG:=full
@@ -151,10 +150,7 @@ LOCAL_MODULE := bootmenu_busybox
 LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_LIBRARIES += libclearsilverregex libcutils libc libm
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
-# LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/bootmenu/binary
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
 LOCAL_MODULE_STEM := busybox
 include $(BUILD_EXECUTABLE)
-
-endif
-
