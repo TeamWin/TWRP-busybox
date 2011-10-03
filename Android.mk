@@ -53,6 +53,16 @@ ifeq ($(TARGET_ARCH),arm)
         android/libc/arch-arm/syscalls/sysinfo.S
 endif
 
+ifeq ($(TARGET_ARCH),mips)
+	BUSYBOX_SRC_FILES += \
+	android/libc/arch-mips/syscalls/adjtimex.S \
+	android/libc/arch-mips/syscalls/getsid.S \
+	android/libc/arch-mips/syscalls/stime.S \
+	android/libc/arch-mips/syscalls/swapon.S \
+	android/libc/arch-mips/syscalls/swapoff.S \
+	android/libc/arch-mips/syscalls/sysinfo.S
+endif
+
 BUSYBOX_C_INCLUDES = \
 	$(LOCAL_PATH)/include-$(BUSYBOX_CONFIG) \
 	$(LOCAL_PATH)/include $(LOCAL_PATH)/libbb \
