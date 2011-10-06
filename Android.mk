@@ -99,8 +99,9 @@ LOCAL_CFLAGS += \
   -Dgetmntent_r=busybox_getmntent_r \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_MODULE := libbusybox
+$(LOCAL_MODULE): busybox_prepare
 LOCAL_MODULE_TAGS := eng
-LOCAL_STATIC_LIBRARIES += busybox_prepare libclearsilverregex libcutils libc libm
+LOCAL_STATIC_LIBRARIES += libclearsilverregex libcutils libc libm
 include $(BUILD_STATIC_LIBRARY)
 
 
@@ -113,9 +114,10 @@ LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
 LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
 LOCAL_CFLAGS := $(BUSYBOX_CFLAGS)
 LOCAL_MODULE := busybox
+$(LOCAL_MODULE): busybox_prepare
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
-LOCAL_STATIC_LIBRARIES += busybox_prepare libclearsilverregex
+LOCAL_STATIC_LIBRARIES += libclearsilverregex
 LOCAL_STATIC_LIBRARIES += libreboot
 LOCAL_CFLAGS += -DCYANOGEN_LIBREBOOT
 include $(BUILD_EXECUTABLE)
