@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Busybox version: 1.19.1-cm71
-# Sun Aug 28 22:40:40 2011
+# Busybox version: 1.19.2-cm71
+# Thu Oct  6 22:09:10 2011
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -275,7 +275,7 @@ CONFIG_FEATURE_FANCY_TAIL=y
 CONFIG_TEE=y
 # CONFIG_FEATURE_TEE_USE_BLOCK_IO is not set
 CONFIG_TRUE=y
-CONFIG_TTY=y
+# CONFIG_TTY is not set
 CONFIG_UNAME=y
 CONFIG_UNEXPAND=y
 CONFIG_FEATURE_UNEXPAND_LONG_OPTIONS=y
@@ -705,7 +705,7 @@ CONFIG_STRINGS=y
 # CONFIG_FEATURE_TASKSET_FANCY is not set
 CONFIG_TIME=y
 # CONFIG_TIMEOUT is not set
-# CONFIG_TTYSIZE is not set
+CONFIG_TTYSIZE=y
 # CONFIG_VOLNAME is not set
 # CONFIG_WALL is not set
 # CONFIG_WATCHDOG is not set

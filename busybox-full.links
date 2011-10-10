@@ -178,7 +178,6 @@
 /bin/tr
 /bin/traceroute
 /bin/true
-/bin/tty
 /bin/ttysize
 /sbin/tune2fs
 /bin/umount

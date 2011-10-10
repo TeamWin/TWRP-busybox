@@ -26,7 +26,6 @@ $(BUSYBOX_CONFIG):
 	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
 	@rm $(LOCAL_PATH)/include/usage_compressed.h
 	@rm -f $(LOCAL_PATH)/.config-old
-	@cp $(ANDROID_BUILD_TOP)/system/core/toolbox/reboot.c $(LOCAL_PATH)/android/reboot.c
 
 busybox_prepare: $(BUSYBOX_CONFIG)
 LOCAL_MODULE := busybox_prepare
@@ -99,9 +98,9 @@ LOCAL_CFLAGS += \
   -Dgetmntent_r=busybox_getmntent_r \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_MODULE := libbusybox
-$(LOCAL_MODULE): busybox_prepare
 LOCAL_MODULE_TAGS := eng
-LOCAL_STATIC_LIBRARIES += libclearsilverregex libcutils libc libm
+LOCAL_STATIC_LIBRARIES := libclearsilverregex libcutils libc libm
+$(LOCAL_MODULE): busybox_prepare
 include $(BUILD_STATIC_LIBRARY)
 
 
@@ -114,12 +113,10 @@ LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
 LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
 LOCAL_CFLAGS := $(BUSYBOX_CFLAGS)
 LOCAL_MODULE := busybox
-$(LOCAL_MODULE): busybox_prepare
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
-LOCAL_STATIC_LIBRARIES += libclearsilverregex
-LOCAL_STATIC_LIBRARIES += libreboot
-LOCAL_CFLAGS += -DCYANOGEN_LIBREBOOT
+LOCAL_STATIC_LIBRARIES := libclearsilverregex
+$(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)
 
 BUSYBOX_LINKS := $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).links)
@@ -158,11 +155,12 @@ LOCAL_CFLAGS += \
   -Dgetmntent_r=busybox_getmntent_r \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_FORCE_STATIC_EXECUTABLE := true
-LOCAL_MODULE := bootmenu_busybox
+LOCAL_MODULE := static_busybox
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES += libclearsilverregex libcutils libc libm
+LOCAL_STATIC_LIBRARIES := libclearsilverregex libcutils libc libm
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
 LOCAL_MODULE_STEM := busybox
+$(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)

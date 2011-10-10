@@ -139,7 +139,7 @@
 /bin/touch
 /bin/tr
 /bin/true
-/bin/tty
+/bin/ttysize
 /bin/umount
 /bin/uname
 /bin/unexpand
