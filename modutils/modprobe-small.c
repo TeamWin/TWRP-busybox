@@ -694,7 +694,7 @@ The following options are useful for people managing distributions:
                         Use the file instead of the current kernel symbols
 */
 
-//usage:#if ENABLE_MODPROBE_SMALL
+//usage:#if ENABLE_MODPROBE_SMALL || ENABLE_FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE
 
 //usage:#define depmod_trivial_usage NOUSAGE_STR
 //usage:#define depmod_full_usage ""

@@ -44,7 +44,7 @@ config MODPROBE_SMALL
 config FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE
 	bool "Accept module options on modprobe command line"
 	default y
-	depends on MODPROBE_SMALL
+	depends on MODPROBE_SMALL || MODPROBE
 	select PLATFORM_LINUX
 	help
 	  Allow insmod and modprobe take module options from command line.
@@ -52,7 +52,7 @@ config FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE
 config FEATURE_MODPROBE_SMALL_CHECK_ALREADY_LOADED
 	bool "Skip loading of already loaded modules"
 	default y
-	depends on MODPROBE_SMALL
+	depends on MODPROBE_SMALL || MODPROBE
 	help
 	  Check if the module is already loaded.
 
