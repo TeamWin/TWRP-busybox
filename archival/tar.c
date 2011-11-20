@@ -264,8 +264,7 @@ static int writeTarHeader(struct TarBallInfo *tbInfo,
 	PUT_OCTAL(header.uid, statbuf->st_uid);
 	PUT_OCTAL(header.gid, statbuf->st_gid);
 	memset(header.size, '0', sizeof(header.size)-1); /* Regular file size is handled later */
-	/* users report that files with negative st_mtime cause trouble, so: */
-	PUT_OCTAL(header.mtime, statbuf->st_mtime >= 0 ? statbuf->st_mtime : 0);
+	PUT_OCTAL(header.mtime, statbuf->st_mtime);
 
 	/* Enter the user and group names */
 	safe_strncpy(header.uname, get_cached_username(statbuf->st_uid), sizeof(header.uname));

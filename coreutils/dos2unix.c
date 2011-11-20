@@ -42,8 +42,8 @@ static void convert(char *fn, int conv_type)
 {
 	FILE *in, *out;
 	int i;
-	char *temp_fn = temp_fn; /* for compiler */
-	char *resolved_fn = resolved_fn;
+	char *temp_fn = NULL;
+	char *resolved_fn = NULL;
 
 	in = stdin;
 	out = stdout;

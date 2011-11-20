@@ -353,8 +353,8 @@ int patch_main(int argc UNUSED_PARAM, char **argv)
 	int reverse, state = 0;
 	char *oldname = NULL, *newname = NULL;
 	char *opt_p, *opt_i;
-	long oldlen = oldlen; /* for compiler */
-	long newlen = newlen; /* for compiler */
+	long oldlen = 0;
+	long newlen = 0;
 
 	INIT_TT();
 

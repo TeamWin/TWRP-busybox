@@ -1,16 +1,16 @@
 LOCAL_PATH := $(call my-dir)
 
 
-# Make a static library for clearsilver's regex.
-# This prevents multiple symbol definition error....
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := ../clearsilver/util/regex/regex.c
-LOCAL_MODULE := libclearsilverregex
-LOCAL_C_INCLUDES := \
-        external/clearsilver \
-        external/clearsilver/util/regex
-include $(BUILD_STATIC_LIBRARY)
+# Bionic Branches Switches (CM7/AOSP/ICS)
+BIONIC_ICS := true
 
+
+# Make a static library for regex.
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := android/regex/regex.c
+LOCAL_C_INCLUDES := android/regex
+LOCAL_MODULE := libclearsilverregex
+include $(BUILD_STATIC_LIBRARY)
 
 
 # Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
@@ -46,12 +46,12 @@ BUSYBOX_SRC_FILES = $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).sources)
 
 ifeq ($(TARGET_ARCH),arm)
 	BUSYBOX_SRC_FILES += \
-        android/libc/arch-arm/syscalls/adjtimex.S \
-        android/libc/arch-arm/syscalls/getsid.S \
-        android/libc/arch-arm/syscalls/stime.S \
-        android/libc/arch-arm/syscalls/swapon.S \
-        android/libc/arch-arm/syscalls/swapoff.S \
-        android/libc/arch-arm/syscalls/sysinfo.S
+	android/libc/arch-arm/syscalls/adjtimex.S \
+	android/libc/arch-arm/syscalls/getsid.S \
+	android/libc/arch-arm/syscalls/stime.S \
+	android/libc/arch-arm/syscalls/swapon.S \
+	android/libc/arch-arm/syscalls/swapoff.S \
+	android/libc/arch-arm/syscalls/sysinfo.S
 endif
 
 ifeq ($(TARGET_ARCH),mips)
@@ -67,12 +67,11 @@ endif
 BUSYBOX_C_INCLUDES = \
 	$(LOCAL_PATH)/include-$(BUSYBOX_CONFIG) \
 	$(LOCAL_PATH)/include $(LOCAL_PATH)/libbb \
-	external/clearsilver \
-	external/clearsilver/util/regex \
 	bionic/libc/private \
 	bionic/libm/include \
 	bionic/libm \
-	libc/kernel/common
+	libc/kernel/common \
+	$(LOCAL_PATH)/android/regex
 
 BUSYBOX_CFLAGS = \
 	-Werror=implicit \
@@ -82,6 +81,10 @@ BUSYBOX_CFLAGS = \
 	-D'CONFIG_DEFAULT_MODULES_DIR="$(KERNEL_MODULES_DIR)"' \
 	-D'BB_VER="$(strip $(shell $(SUBMAKE) kernelversion)) $(BUSYBOX_SUFFIX)"' -DBB_BT=AUTOCONF_TIMESTAMP
 
+# to handle differences in ICS (ipv6)
+ifeq ($(BIONIC_ICS),true)
+BUSYBOX_CFLAGS += -DBIONIC_ICS
+endif
 
 
 # Build the static lib for the recovery tool
@@ -101,7 +104,7 @@ LOCAL_CFLAGS += \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_MODULE := libbusybox
 LOCAL_MODULE_TAGS := eng
-LOCAL_STATIC_LIBRARIES := libclearsilverregex libcutils libc libm
+LOCAL_STATIC_LIBRARIES := libcutils libc libm
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_STATIC_LIBRARY)
 
@@ -111,13 +114,16 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 BUSYBOX_CONFIG:=full
 BUSYBOX_SUFFIX:=bionic
-LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES) android/libc/__set_errno.c
+LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
+ifeq ($(BIONIC_ICS),true)
+LOCAL_SRC_FILES += android/libc/__set_errno.c
+endif
 LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
 LOCAL_CFLAGS := $(BUSYBOX_CFLAGS)
 LOCAL_MODULE := busybox
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
-LOCAL_REQUIRED_MODULES := libm
+LOCAL_SHARED_LIBRARIES := libc libcutils libm
 LOCAL_STATIC_LIBRARIES := libclearsilverregex
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)
@@ -160,8 +166,7 @@ LOCAL_CFLAGS += \
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := static_busybox
 LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := libm
-LOCAL_STATIC_LIBRARIES := libclearsilverregex libcutils libc libm
+LOCAL_STATIC_LIBRARIES := libclearsilverregex libc libcutils libm
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities

@@ -250,7 +250,7 @@ void *volume_id_get_buffer(struct volume_id *id, uint64_t off, size_t len)
 		goto err;
 	}
 	read_len = full_read(id->fd, dst, len);
-	if (read_len != len) {
+	if (read_len != (ssize_t) len) {
 		dbg("requested 0x%x bytes, got 0x%x bytes",
 				(unsigned) len, (unsigned) read_len);
  err:

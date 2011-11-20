@@ -448,7 +448,7 @@ int cpio_main(int argc UNUSED_PARAM, char **argv)
 	while (get_header_cpio(archive_handle) == EXIT_SUCCESS)
 		continue;
 
-	if (archive_handle->cpio__blocks != (off_t)-1
+	if ((off_t)archive_handle->cpio__blocks != (off_t)-1
 	 && !(opt & OPT_QUIET)
 	) {
 		fprintf(stderr, "%"OFF_FMT"u blocks\n", archive_handle->cpio__blocks);

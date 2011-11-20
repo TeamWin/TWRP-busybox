@@ -90,7 +90,7 @@ static int sysctl_act_on_setting(char *setting)
 {
 	int fd, retval = EXIT_SUCCESS;
 	char *cptr, *outname;
-	char *value = value; /* for compiler */
+	char *value = NULL;
 
 	outname = xstrdup(setting);
 
