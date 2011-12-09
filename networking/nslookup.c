@@ -37,8 +37,7 @@
 # include <resolv_private.h>
 # include <resolv.h>
 # undef _res
-extern struct __res_state _nres;
-# define _res _nres
+# define _res (*__res_get_state())
 #endif
 
 /*
