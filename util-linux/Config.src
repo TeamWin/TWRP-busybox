@@ -75,7 +75,7 @@ config FEATURE_DMESG_PRETTY
 	    BIOS-provided physical RAM map:
 	     BIOS-e820: 0000000000000000 - 000000000009f000 (usable)
 
-	  Without this option you will see:
+	  Without this option (or with -r) you will see:
 	    # dmesg
 	    <5>Linux version 2.6.17.4 .....
 	    <6>BIOS-provided physical RAM map:
