@@ -696,8 +696,6 @@ static int diffreg(char *file[2])
 	FILE *fp[2];
 	bool binary = false, differ = false;
 	int status = STATUS_SAME, i;
-	fp[0] = stdin;
-	fp[1] = stdin;
 
 	fp[0] = stdin;
 	fp[1] = stdin;

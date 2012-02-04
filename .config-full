@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Busybox version: 1.19.3-cm9
-# Sun Nov 20 14:43:42 2011
+# Busybox version: 1.19.4-cm9
+# Sun Feb  5 18:40:31 2012
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
