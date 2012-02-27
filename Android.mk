@@ -12,6 +12,13 @@ LOCAL_C_INCLUDES := android/regex
 LOCAL_MODULE := libclearsilverregex
 include $(BUILD_STATIC_LIBRARY)
 
+# Make a static library for RPC library (coming from uClibc).
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(shell cat $(LOCAL_PATH)/android/librpc.sources)
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/librpc
+LOCAL_MODULE := libuclibcrpc
+include $(BUILD_STATIC_LIBRARY)
+
 
 # Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
 
@@ -71,7 +78,8 @@ BUSYBOX_C_INCLUDES = \
 	bionic/libm/include \
 	bionic/libm \
 	libc/kernel/common \
-	$(LOCAL_PATH)/android/regex
+	$(LOCAL_PATH)/android/regex \
+	$(LOCAL_PATH)/android/librpc
 
 BUSYBOX_CFLAGS = \
 	-Werror=implicit \
@@ -124,7 +132,7 @@ LOCAL_MODULE := busybox
 LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 LOCAL_SHARED_LIBRARIES := libc libcutils libm
-LOCAL_STATIC_LIBRARIES := libclearsilverregex
+LOCAL_STATIC_LIBRARIES := libclearsilverregex libuclibcrpc
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)
 
@@ -166,7 +174,7 @@ LOCAL_CFLAGS += \
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := static_busybox
 LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_LIBRARIES := libclearsilverregex libc libcutils libm
+LOCAL_STATIC_LIBRARIES := libclearsilverregex libc libcutils libm libuclibcrpc
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
