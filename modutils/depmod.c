@@ -10,11 +10,6 @@
 
 //applet:IF_DEPMOD(APPLET(depmod, BB_DIR_SBIN, BB_SUID_DROP))
 
-//usage:#if !ENABLE_MODPROBE_SMALL
-//usage:#define depmod_trivial_usage NOUSAGE_STR
-//usage:#define depmod_full_usage ""
-//usage:#endif
-
 #include "libbb.h"
 #include "modutils.h"
 #include <sys/utsname.h> /* uname() */
@@ -55,7 +50,10 @@ static int FAST_FUNC parse_module(const char *fname, struct stat *sb UNUSED_PARA
 	*first = info;
 
 	info->dnext = info->dprev = info;
-	info->name = xstrdup(fname + 2); /* skip "./" */
+	if (strncmp(fname, "./", 2) == 0)
+		info->name = xstrdup(fname + 2);
+	else
+		info->name = xstrdup(fname);
 	info->modname = xstrdup(filename2modname(fname, modname));
 	for (ptr = image; ptr < image + len - 10; ptr++) {
 		if (strncmp(ptr, "depends=", 8) == 0) {
@@ -131,7 +129,15 @@ static void xfreopen_write(const char *file, FILE *f)
 		bb_perror_msg_and_die("can't open '%s'", file);
 }
 
-/* Usage:
+//usage:#if !ENABLE_MODPROBE_SMALL
+//usage:#define depmod_trivial_usage "[-n] [MODFILES]..."
+//usage:#define depmod_full_usage "\n\n"
+//usage:       "Generate modules.dep, alias, and symbols files"
+//usage:     "\n"
+//usage:     "\n	-n	Dry run: print files to stdout"
+//usage:#endif
+
+/* Upstream usage:
  * [-aAenv] [-C FILE or DIR] [-b BASE] [-F System.map] [VERSION] [MODFILES]...
  *	-a --all
  *		Probe all modules. Default if no MODFILES.
@@ -142,7 +148,7 @@ static void xfreopen_write(const char *file, FILE *f)
  *	-C --config FILE or DIR
  *		Path to /etc/depmod.conf or /etc/depmod.d/
  *	-e --errsyms
- *		When combined with the -F option, this reports any symbols which
+ *		When combined with the -F option, this reports any symbols
  *		which are not supplied by other modules or kernel.
  *	-F --filesyms System.map
  *	-n --dry-run
@@ -154,8 +160,13 @@ static void xfreopen_write(const char *file, FILE *f)
  *	-u	No-op
  *	-q	No-op
  *
- * So far we only support: [-rn] [-b BASE] [VERSION] [MODFILES]...
- * -aAeF are accepted but ignored. -vC are not accepted.
+ * So far we only support: [-n] [-b BASE] [VERSION] [MODFILES]...
+ * Accepted but ignored:
+ * -aAe
+ * -F System.map
+ * -C FILE/DIR
+ *
+ * Not accepted: -v
  */
 enum {
 	//OPT_a = (1 << 0), /* All modules, ignore mods in argv */

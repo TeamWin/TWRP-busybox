@@ -696,8 +696,14 @@ The following options are useful for people managing distributions:
 
 //usage:#if ENABLE_MODPROBE_SMALL || ENABLE_FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE
 
+//// Note: currently, help system shows modprobe --help text for all aliased cmds
+//// (see APPLET_ODDNAME macro definition).
+//// All other help texts defined below are not used. FIXME?
+
+//usage:#if ENABLE_MODPROBE_SMALL
 //usage:#define depmod_trivial_usage NOUSAGE_STR
 //usage:#define depmod_full_usage ""
+//usage:#endif
 
 //usage:#define lsmod_trivial_usage
 //usage:       ""

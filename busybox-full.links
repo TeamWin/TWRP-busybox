@@ -1,5 +1,6 @@
 /bin/[
 /bin/[[
+/sbin/adjtimex
 /sbin/arp
 /bin/ash
 /bin/awk
@@ -165,6 +166,7 @@
 /bin/tac
 /bin/tail
 /bin/tar
+/bin/taskset
 /bin/tee
 /bin/telnet
 /sbin/telnetd

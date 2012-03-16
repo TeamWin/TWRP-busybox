@@ -22,9 +22,9 @@ libpwdgrp/uidgid_get.c
 libbb/get_cpu_count.c
 libbb/get_shell_name.c
 
-miscutils/bbconfig.c ./miscutils/crond.c ./miscutils/crontab.c miscutils/dc.c miscutils/devmem.c miscutils/less.c miscutils/man.c
+miscutils/adjtimex.c miscutils/bbconfig.c miscutils/crond.c miscutils/crontab.c miscutils/dc.c miscutils/devmem.c miscutils/less.c miscutils/man.c
 miscutils/flash_lock_unlock.c miscutils/flashcp.c miscutils/mountpoint.c miscutils/nandwrite.c
-miscutils/rx.c miscutils/setserial.c miscutils/setsid.c miscutils/strings.c miscutils/time.c miscutils/timeout.c miscutils/ttysize.c
+miscutils/rx.c miscutils/setserial.c miscutils/setsid.c miscutils/strings.c miscutils/taskset.c miscutils/time.c miscutils/timeout.c miscutils/ttysize.c
 
 modutils/modinfo.c modutils/modprobe-small.c modutils/modutils.c
 modutils/lsmod.c modutils/depmod.c modutils/rmmod.c modutils/insmod.c

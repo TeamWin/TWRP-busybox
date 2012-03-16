@@ -48,6 +48,7 @@
 #include <netinet/ip.h> /* For IPTOS_LOWDELAY definition */
 #ifdef __BIONIC__
 #include <linux/timex.h>
+extern int adjtimex (struct timex *);
 #else
 #include <sys/timex.h>
 #endif
@@ -2064,7 +2065,7 @@ int ntpd_main(int argc UNUSED_PARAM, char **argv)
 		timeout++; /* (nextaction - G.cur_time) rounds down, compensating */
 
 		/* Here we may block */
-		VERB2 bb_error_msg("poll %us, sockets:%u, poll interval:%us", timeout, i, 1 << G.poll_exp);
+		VERB2 bb_error_msg("poll:%us, sockets:%u, poll interval:%us", timeout, i, 1 << G.poll_exp);
 		nfds = poll(pfd, i, timeout * 1000);
 		gettime1900d(); /* sets G.cur_time */
 		if (nfds <= 0) {

@@ -23,6 +23,10 @@
 //usage:       "$ taskset -p 1\n"
 //usage:       "pid 1's current affinity mask: 3\n"
 
+#ifdef BIONIC_ICS
+#define _GNU_SOURCE 1
+#endif
+
 #include <sched.h>
 #include "libbb.h"
 
