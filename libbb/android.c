@@ -88,6 +88,9 @@ const char *hasmntopt(const struct mntent *mnt, const char *opt)
 }
 
 /* declared in grp.h, but not necessary */
+#if !ENABLE_USE_BB_PWD_GRP
 int setpwent() { return 0; }
 void setgrent() {}
 void endgrent() {}
+#endif
+

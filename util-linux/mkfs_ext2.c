@@ -48,7 +48,7 @@
 
 #include "libbb.h"
 #include <linux/fs.h>
-#include <linux/ext2_fs.h>
+#include "bb_e2fs_defs.h"
 
 #define ENABLE_FEATURE_MKFS_EXT2_RESERVED_GDT 0
 #define ENABLE_FEATURE_MKFS_EXT2_DIR_INDEX    1
@@ -140,7 +140,7 @@ static uint32_t has_super(uint32_t x)
 		117649, 177147, 390625, 531441, 823543, 1594323, 1953125,
 		4782969, 5764801, 9765625, 14348907, 40353607, 43046721,
 		48828125, 129140163, 244140625, 282475249, 387420489,
-		1162261467, 1220703125, 1977326743, 3486784401/* >2^31 */,
+		0x4546B3DB, 0x48C27395, 0x75DB9C97, 0xCFD41B91/* >2^31 */,
 	};
 	const uint32_t *sp = supers + ARRAY_SIZE(supers);
 	while (1) {
@@ -317,7 +317,7 @@ int mkfs_ext2_main(int argc UNUSED_PARAM, char **argv)
 		}
 	}
 
-	if ((int32_t)bytes_per_inode < blocksize)
+	if ((uint32_t) bytes_per_inode < (uint32_t) blocksize)
 		bb_error_msg_and_die("-%c is bad", 'i');
 	// number of bits in one block, i.e. 8*blocksize
 #define blocks_per_group (8 * blocksize)
@@ -615,7 +615,11 @@ int mkfs_ext2_main(int argc UNUSED_PARAM, char **argv)
 
 	// zero boot sectors
 	memset(buf, 0, blocksize);
-	PUT(0, buf, 1024); // N.B. 1024 <= blocksize, so buf[0..1023] contains zeros
+	// Disabled: standard mke2fs doesn't do this, and
+	// on SPARC this destroys Sun disklabel.
+	// Users who need/want zeroing can easily do it with dd.
+	//PUT(0, buf, 1024); // N.B. 1024 <= blocksize, so buf[0..1023] contains zeros
+
 	// zero inode tables
 	for (i = 0; i < ngroups; ++i)
 		for (n = 0; n < inode_table_blocks; ++n)

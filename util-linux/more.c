@@ -37,9 +37,11 @@ struct globals {
 #define new_settings     (G.new_settings    )
 #define cin_fileno       (G.cin_fileno      )
 
-#define setTermSettings(fd, argp) do { \
-		if (ENABLE_FEATURE_USE_TERMIOS) tcsetattr(fd, TCSANOW, argp); \
-	} while (0)
+#define setTermSettings(fd, argp) \
+do { \
+	if (ENABLE_FEATURE_USE_TERMIOS) \
+		tcsetattr(fd, TCSANOW, argp); \
+} while (0)
 #define getTermSettings(fd, argp) tcgetattr(fd, argp)
 
 static void gotsig(int sig UNUSED_PARAM)
@@ -57,14 +59,13 @@ int more_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int more_main(int argc UNUSED_PARAM, char **argv)
 {
 	int c = EOF; /* for compiler */
-	int lines;
 	int input = 0;
 	int spaces = 0;
 	int please_display_more_prompt;
 	struct stat st;
 	FILE *file;
 	FILE *cin;
-	int len;
+	unsigned len, lines;
 	unsigned terminal_width;
 	unsigned terminal_height;
 
@@ -83,8 +84,7 @@ int more_main(int argc UNUSED_PARAM, char **argv)
 		cin_fileno = fileno(cin);
 		getTermSettings(cin_fileno, &initial_settings);
 		new_settings = initial_settings;
-		new_settings.c_lflag &= ~ICANON;
-		new_settings.c_lflag &= ~ECHO;
+		new_settings.c_lflag &= ~(ICANON | ECHO);
 		new_settings.c_cc[VMIN] = 1;
 		new_settings.c_cc[VTIME] = 0;
 		setTermSettings(cin_fileno, &new_settings);

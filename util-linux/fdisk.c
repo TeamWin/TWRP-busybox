@@ -792,7 +792,7 @@ read_pte(struct pte *pe, sector_t offset)
 	pe->sectorbuffer = xzalloc(sector_size);
 	seek_sector(offset);
 	/* xread would make us abort - bad for fdisk -l */
-	if (full_read(dev_fd, pe->sectorbuffer, sector_size) != sector_size)
+	if ((unsigned) full_read(dev_fd, pe->sectorbuffer, sector_size) != sector_size)
 		fdisk_fatal(unable_to_read);
 #if ENABLE_FEATURE_FDISK_WRITABLE
 	pe->changed = 0;
@@ -1969,7 +1969,7 @@ wrong_p_order(int *prev)
 	const struct pte *pe;
 	const struct partition *p;
 	sector_t last_p_start_pos = 0, p_start_pos;
-	unsigned i, last_i = 0;
+	int i, last_i = 0;
 
 	for (i = 0; i < g_partitions; i++) {
 		if (i == 4) {
@@ -2216,7 +2216,7 @@ x_list_table(int extend)
 static void
 fill_bounds(sector_t *first, sector_t *last)
 {
-	unsigned i;
+	int i;
 	const struct pte *pe = &ptes[0];
 	const struct partition *p;
 
@@ -2371,7 +2371,7 @@ add_partition(int n, int sys)
 	do {
 		temp = start;
 		for (i = 0; i < g_partitions; i++) {
-			int lastplusoff;
+			sector_t lastplusoff;
 
 			if (start == ptes[i].offset_from_dev_start)
 				start += sector_offset;

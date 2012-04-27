@@ -1,5 +1,5 @@
 LOCAL_PATH := $(call my-dir)
-
+BB_PATH := $(LOCAL_PATH)
 
 # Bionic Branches Switches (CM7/AOSP/ICS)
 BIONIC_ICS := true
@@ -8,47 +8,61 @@ BIONIC_ICS := true
 # Make a static library for regex.
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := android/regex/regex.c
-LOCAL_C_INCLUDES := android/regex
+LOCAL_C_INCLUDES := $(BB_PATH)/android/regex
 LOCAL_MODULE := libclearsilverregex
 include $(BUILD_STATIC_LIBRARY)
 
 # Make a static library for RPC library (coming from uClibc).
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := $(shell cat $(LOCAL_PATH)/android/librpc.sources)
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/librpc
+LOCAL_SRC_FILES := $(shell cat $(BB_PATH)/android/librpc.sources)
+LOCAL_C_INCLUDES := $(BB_PATH)/android/librpc
 LOCAL_MODULE := libuclibcrpc
 include $(BUILD_STATIC_LIBRARY)
 
 
+LOCAL_PATH := $(BB_PATH)
+include $(CLEAR_VARS)
+
+# Each profile require a compressed usage/config, outside the source tree for git history
+# We keep the uncompressed headers in local include-<profile> to track config changes.
+
+BB_INCLUDES_OUT := $(TARGET_OUT_INTERMEDIATES)/include
+$(BB_INCLUDES_OUT):
+	mkdir -p $(ANDROID_BUILD_TOP)/$(BB_INCLUDES_OUT)
+
 # Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
 
-include $(CLEAR_VARS)
 KERNEL_MODULES_DIR ?= /system/lib/modules
 BUSYBOX_CONFIG := minimal full
 $(BUSYBOX_CONFIG):
-	@echo GENERATE INCLUDES FOR BUSYBOX $@
-	@cd $(LOCAL_PATH) && make clean
-	cp $(LOCAL_PATH)/.config-$@ $(LOCAL_PATH)/.config
-	cd $(LOCAL_PATH) && make prepare
-	@#cp $(LOCAL_PATH)/.config $(LOCAL_PATH)/.config-$@
-	@mkdir -p $(LOCAL_PATH)/include-$@
-	cp $(LOCAL_PATH)/include/*.h $(LOCAL_PATH)/include-$@/
-	@rm $(LOCAL_PATH)/include/usage_compressed.h
-	@rm -f $(LOCAL_PATH)/.config-old
+	@echo -e ${CL_PFX}"prepare config for busybox $@ profile"${CL_RST}
+	@cd $(BB_PATH) && make clean
+	@cd $(BB_PATH) && git clean -f -- ./include-$@/
+	cp $(BB_PATH)/.config-$@ $(BB_PATH)/.config
+	cd $(BB_PATH) && make prepare
+	@#cp $(BB_PATH)/.config $(BB_PATH)/.config-$@
+	@mkdir -p $(BB_PATH)/include-$@
+	cp $(BB_PATH)/include/*.h $(BB_PATH)/include-$@/
+	@mkdir -p $(BB_INCLUDES_OUT)/busybox-$@
+	@cp $(BB_PATH)/include/*.h $(BB_INCLUDES_OUT)/busybox-$@/
+	@rm $(BB_PATH)/include/usage_compressed.h
+	@rm $(BB_PATH)/include/autoconf.h
+	@rm -f $(BB_PATH)/.config-old
 
 busybox_prepare: $(BUSYBOX_CONFIG)
 LOCAL_MODULE := busybox_prepare
-LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE_TAGS := eng debug
 include $(BUILD_STATIC_LIBRARY)
 
 
+LOCAL_PATH := $(BB_PATH)
 include $(CLEAR_VARS)
 
 KERNEL_MODULES_DIR ?= /system/lib/modules
 
-SUBMAKE := make -s -C $(LOCAL_PATH) CC=$(CC)
+SUBMAKE := make -s -C $(BB_PATH) CC=$(CC)
 
-BUSYBOX_SRC_FILES = $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).sources) \
+BUSYBOX_SRC_FILES = $(shell cat $(BB_PATH)/busybox-$(BUSYBOX_CONFIG).sources) \
 	libbb/android.c
 
 ifeq ($(TARGET_ARCH),arm)
@@ -72,14 +86,15 @@ ifeq ($(TARGET_ARCH),mips)
 endif
 
 BUSYBOX_C_INCLUDES = \
-	$(LOCAL_PATH)/include-$(BUSYBOX_CONFIG) \
-	$(LOCAL_PATH)/include $(LOCAL_PATH)/libbb \
+	$(BB_INCLUDES_OUT)/busybox-$(BUSYBOX_CONFIG) \
+	$(BB_PATH)/include-$(BUSYBOX_CONFIG) \
+	$(BB_PATH)/include $(BB_PATH)/libbb \
 	bionic/libc/private \
 	bionic/libm/include \
 	bionic/libm \
 	libc/kernel/common \
-	$(LOCAL_PATH)/android/regex \
-	$(LOCAL_PATH)/android/librpc
+	$(BB_PATH)/android/regex \
+	$(BB_PATH)/android/librpc
 
 BUSYBOX_CFLAGS = \
 	-Werror=implicit \
@@ -111,7 +126,7 @@ LOCAL_CFLAGS += \
   -Dgetmntent_r=busybox_getmntent_r \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_MODULE := libbusybox
-LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE_TAGS := eng debug
 LOCAL_STATIC_LIBRARIES := libcutils libc libm
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_STATIC_LIBRARY)
@@ -119,7 +134,9 @@ include $(BUILD_STATIC_LIBRARY)
 
 # Bionic Busybox /system/xbin
 
+LOCAL_PATH := $(BB_PATH)
 include $(CLEAR_VARS)
+
 BUSYBOX_CONFIG:=full
 BUSYBOX_SUFFIX:=bionic
 LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
@@ -129,14 +146,14 @@ endif
 LOCAL_C_INCLUDES := $(BUSYBOX_C_INCLUDES)
 LOCAL_CFLAGS := $(BUSYBOX_CFLAGS)
 LOCAL_MODULE := busybox
-LOCAL_MODULE_TAGS := eng
+LOCAL_MODULE_TAGS := eng debug
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)
 LOCAL_SHARED_LIBRARIES := libc libcutils libm
 LOCAL_STATIC_LIBRARIES := libclearsilverregex libuclibcrpc
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)
 
-BUSYBOX_LINKS := $(shell cat $(LOCAL_PATH)/busybox-$(BUSYBOX_CONFIG).links)
+BUSYBOX_LINKS := $(shell cat $(BB_PATH)/busybox-$(BUSYBOX_CONFIG).links)
 # nc is provided by external/netcat
 exclude := nc
 SYMLINKS := $(addprefix $(TARGET_OUT_OPTIONAL_EXECUTABLES)/,$(filter-out $(exclude),$(notdir $(BUSYBOX_LINKS))))
@@ -157,7 +174,9 @@ ALL_MODULES.$(LOCAL_MODULE).INSTALLED := \
 
 # Static Busybox
 
+LOCAL_PATH := $(BB_PATH)
 include $(CLEAR_VARS)
+
 BUSYBOX_CONFIG:=full
 BUSYBOX_SUFFIX:=static
 LOCAL_SRC_FILES := $(BUSYBOX_SRC_FILES)
@@ -173,11 +192,11 @@ LOCAL_CFLAGS += \
   -Dgenerate_uuid=busybox_generate_uuid
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_MODULE := static_busybox
+LOCAL_MODULE_STEM := busybox
 LOCAL_MODULE_TAGS := optional
 LOCAL_STATIC_LIBRARIES := libclearsilverregex libc libcutils libm libuclibcrpc
 LOCAL_MODULE_CLASS := UTILITY_EXECUTABLES
 LOCAL_MODULE_PATH := $(PRODUCT_OUT)/utilities
 LOCAL_UNSTRIPPED_PATH := $(PRODUCT_OUT)/symbols/utilities
-LOCAL_MODULE_STEM := busybox
 $(LOCAL_MODULE): busybox_prepare
 include $(BUILD_EXECUTABLE)

@@ -716,6 +716,7 @@ static int diffreg(char *file[2])
 #endif
 				"/tmp/difXXXXXX";
 			int fd_tmp = xmkstemp(name);
+
 			unlink(name);
 			if (bb_copyfd_eof(fd, fd_tmp) < 0)
 				xfunc_die();

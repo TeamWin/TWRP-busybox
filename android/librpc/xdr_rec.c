@@ -422,7 +422,7 @@ xdrrec_inline (XDR *xdrs, u_int len)
       break;
 
     case XDR_DECODE:
-      if ((len <= rstrm->fbtbc) &&
+      if ((len <= (u_int) rstrm->fbtbc) &&
 	  ((rstrm->in_finger + len) <= rstrm->in_boundry))
 	{
 	  buf = (int32_t *) rstrm->in_finger;

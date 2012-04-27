@@ -245,7 +245,7 @@ void *volume_id_get_buffer(struct volume_id *id, uint64_t off, size_t len)
 	dbg("read seekbuf off:0x%llx len:0x%zx",
 				(unsigned long long) off, len);
  do_read:
-	if (lseek(id->fd, off, SEEK_SET) != off) {
+	if (lseek(id->fd, off, SEEK_SET) != (int64_t) off) {
 		dbg("seek(0x%llx) failed", (unsigned long long) off);
 		goto err;
 	}
