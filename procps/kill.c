@@ -196,7 +196,7 @@ int kill_main(int argc, char **argv)
 					ret = 1;
 					goto resume;
 				}
-				if (p->pid == omit)
+				if ((pid_t) p->pid == (pid_t) omit)
 					goto dont_kill;
 			}
 			kill(p->pid, signo);

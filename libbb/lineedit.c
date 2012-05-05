@@ -125,7 +125,7 @@ struct lineedit_statics {
 	unsigned cmdedit_y;        /* pseudoreal y (row) terminal position */
 	unsigned cmdedit_prmt_len; /* length of prompt (without colors etc) */
 
-	unsigned cursor;
+	int cursor;
 	int command_len; /* must be signed */
 	/* signed maxsize: we want x in "if (x > S.maxsize)"
 	 * to _not_ be promoted to unsigned */
@@ -217,7 +217,7 @@ static size_t load_string(const char *src)
 		return len;
 	} else {
 		unsigned i = 0;
-		while (src[i] && i < S.maxsize - 1) {
+		while (src[i] && i < (unsigned) S.maxsize - 1) {
 			command_ps[i] = src[i];
 			i++;
 		}
@@ -441,7 +441,7 @@ static void put_prompt(void)
 /* (optimized for slow terminals) */
 static void input_backward(unsigned num)
 {
-	if (num > cursor)
+	if (num > (unsigned) cursor)
 		num = cursor;
 	if (num == 0)
 		return;
@@ -496,7 +496,7 @@ static void input_backward(unsigned num)
 		 * A simpler thing to do is to redraw everything from the start
 		 * up to new cursor position (which is already known):
 		 */
-		unsigned sv_cursor;
+		int sv_cursor;
 		/* go to 1st column; go up to first line */
 		printf("\r" ESC"[%uA", cmdedit_y);
 		cmdedit_y = 0;
@@ -1072,7 +1072,7 @@ static NOINLINE void input_tab(smallint *lastWasTab)
 	char *match_buf;
 	size_t len_found;
 	/* Length of string used for matching */
-	unsigned match_pfx_len = match_pfx_len;
+	unsigned match_pfx_len = 0;
 	int find_type;
 # if ENABLE_UNICODE_SUPPORT
 	/* cursor pos in command converted to multibyte form */
@@ -1409,7 +1409,8 @@ void save_history(line_input_t *st)
 
 	fp = fopen(st->hist_file, "a");
 	if (fp) {
-		int i, fd;
+		int fd;
+		unsigned i;
 		char *new_name;
 		line_input_t *st_temp;
 
@@ -1478,7 +1479,7 @@ static void save_history(char *str)
 		fd = open(new_name, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 		if (fd >= 0) {
 			FILE *fp;
-			int i;
+			unsigned i;
 
 			fp = xfdopen_for_write(fd);
 			for (i = 0; i < st_temp->cnt_history; i++)
@@ -1499,7 +1500,7 @@ static void save_history(char *str)
 
 static void remember_in_history(char *str)
 {
-	int i;
+	unsigned i;
 
 	if (!(state->flags & DO_HISTORY))
 		return;
@@ -1885,7 +1886,7 @@ static void cmdedit_setwidth(unsigned w, int redraw_flg)
 	cmdedit_termw = w;
 	if (redraw_flg) {
 		/* new y for current cursor */
-		int new_y = (cursor + cmdedit_prmt_len) / w;
+		unsigned new_y = (cursor + cmdedit_prmt_len) / w;
 		/* redraw */
 		redraw((new_y >= cmdedit_y ? new_y : cmdedit_y), command_len - cursor);
 		fflush_all();
@@ -1936,7 +1937,7 @@ static int lineedit_read_key(char *read_key_buffer, int timeout)
 			S.sent_ESC_br6n = 0;
 			if (cursor == 0) { /* otherwise it may be bogus */
 				int col = ((ic >> 32) & 0x7fff) - 1;
-				if (col > cmdedit_prmt_len) {
+				if (col > (int) cmdedit_prmt_len) {
 					cmdedit_x += (col - cmdedit_prmt_len);
 					while (cmdedit_x >= cmdedit_termw) {
 						cmdedit_x -= cmdedit_termw;

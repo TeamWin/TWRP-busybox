@@ -15,8 +15,8 @@ static char *xmalloc_fgets_internal(FILE *file, const char *terminating_string, 
 	char *linebuf = NULL;
 	const int term_length = strlen(terminating_string);
 	int end_string_offset;
-	int linebufsz = 0;
-	int idx = 0;
+	size_t linebufsz = 0;
+	size_t idx = 0;
 	int ch;
 	size_t maxsz = *maxsz_p;
 

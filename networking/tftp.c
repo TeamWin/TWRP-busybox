@@ -380,7 +380,7 @@ static int tftp_protocol(
 		/* add filename and mode */
 		/* fill in packet if the filename fits into xbuf */
 		len = strlen(remote_file) + 1;
-		if (2 + len + sizeof("octet") >= io_bufsize) {
+		if (2 + len + sizeof("octet") >= (uint32_t) io_bufsize) {
 			bb_error_msg("remote filename is too long");
 			goto ret;
 		}
@@ -799,7 +799,7 @@ int tftpd_main(int argc UNUSED_PARAM, char **argv)
 
 	error_msg = "malformed packet";
 	opcode = ntohs(*(uint16_t*)block_buf);
-	if (result < 4 || result >= sizeof(block_buf)
+	if (result < 4 || result >= (int) sizeof(block_buf)
 	 || block_buf[result-1] != '\0'
 	 || (IF_FEATURE_TFTP_PUT(opcode != TFTP_RRQ) /* not download */
 	     IF_GETPUT(&&)

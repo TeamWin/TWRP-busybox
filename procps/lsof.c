@@ -54,7 +54,7 @@ int lsof_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 		char *fdlink;
 		struct dirent *entry;
 
-		if (getpid() == proc->pid)
+		if ((pid_t) getpid() == (pid_t) proc->pid)
 			continue;
 
 		baseofs = sprintf(name, "/proc/%u/fd/", proc->pid);

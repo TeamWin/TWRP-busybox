@@ -2225,10 +2225,10 @@ setvar(const char *name, const char *val, int flags)
 
 	INT_OFF;
 	nameeq = ckmalloc(namelen + vallen + 2);
-	p = memcpy(nameeq, name, namelen) + namelen;
+	p = (char*) ((uint32_t) memcpy(nameeq, name, namelen) + namelen);
 	if (val) {
 		*p++ = '=';
-		p = memcpy(p, val, vallen) + vallen;
+		p = (char*) ((uint32_t) memcpy(p, val, vallen) + vallen);
 	}
 	*p = '\0';
 	setvareq(nameeq, flags | VNOSAVE);
@@ -6363,7 +6363,7 @@ subevalvar(char *p, char *varname, int strloc, int subtype,
 
 #if ENABLE_ASH_BASH_COMPAT
 	case VSSUBSTR:
-		loc = str = stackblock() + strloc;
+		loc = str = (char*) ((uint32_t) stackblock() + strloc);
 		/* Read POS in ${var:POS:LEN} */
 		pos = atoi(loc); /* number(loc) errors out on "1:4" */
 		len = str - startp - 1;

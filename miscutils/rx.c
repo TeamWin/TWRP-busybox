@@ -85,7 +85,7 @@ static int receive(/*int read_fd, */int file_fd)
 		int blockNo, blockNoOnesCompl;
 		int cksum_or_crc;
 		int expected;
-		int i, j;
+		unsigned i, j;
 
 		blockBegin = read_byte(timeout);
 		if (blockBegin < 0)
@@ -109,7 +109,7 @@ static int receive(/*int read_fd, */int file_fd)
 		}
 		/* Write previously received block */
 		errno = 0;
-		if (full_write(file_fd, blockBuf, blockLength) != blockLength) {
+		if ((unsigned) full_write(file_fd, blockBuf, blockLength) != blockLength) {
 			bb_perror_msg(bb_msg_write_error);
 			goto fatal;
 		}
@@ -139,7 +139,7 @@ static int receive(/*int read_fd, */int file_fd)
 		if (blockNoOnesCompl < 0)
 			goto timeout;
 
-		if (blockNo != (255 - blockNoOnesCompl)) {
+		if (blockNo != (int) (255 - blockNoOnesCompl)) {
 			bb_error_msg("bad block ones compl");
 			goto error;
 		}
@@ -162,14 +162,14 @@ static int receive(/*int read_fd, */int file_fd)
 				goto timeout;
 		}
 
-		if (blockNo == ((wantBlockNo - 1) & 0xff)) {
+		if (blockNo == (int) ((wantBlockNo - 1) & 0xff)) {
 			/* a repeat of the last block is ok, just ignore it. */
 			/* this also ignores the initial block 0 which is */
-			/* meta data. */
+			/* meta data. nt)*/
 			blockLength = 0;
 			goto next;
 		}
-		if (blockNo != (wantBlockNo & 0xff)) {
+		if (blockNo != (int) (wantBlockNo & 0xff)) {
 			bb_error_msg("unexpected block no, 0x%08x, expecting 0x%08x", blockNo, wantBlockNo);
 			goto error;
 		}

@@ -634,7 +634,7 @@ int ps_main(int argc UNUSED_PARAM, char **argv UNUSED_PARAM)
 		OPT_l = (1 << ENABLE_SELINUX) * (1 << ENABLE_FEATURE_SHOW_THREADS) * ENABLE_FEATURE_PS_LONG,
 	};
 #if ENABLE_FEATURE_PS_LONG
-	time_t now = now;
+	time_t now = 0;
 	struct sysinfo info;
 #endif
 	int opts = 0;

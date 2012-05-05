@@ -105,7 +105,7 @@ int nc_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int nc_main(int argc, char **argv)
 {
 	/* sfd sits _here_ only because of "repeat" option (-l -l). */
-	int sfd = sfd; /* for gcc */
+	int sfd = 0;
 	int cfd = 0;
 	unsigned lport = 0;
 	IF_NOT_NC_SERVER(const) unsigned do_listen = 0;

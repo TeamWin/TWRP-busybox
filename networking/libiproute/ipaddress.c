@@ -239,7 +239,7 @@ static int FAST_FUNC print_addrinfo(const struct sockaddr_nl *who UNUSED_PARAM,
 	if (!rta_tb[IFA_ADDRESS])
 		rta_tb[IFA_ADDRESS] = rta_tb[IFA_LOCAL];
 
-	if (G_filter.ifindex && G_filter.ifindex != ifa->ifa_index)
+	if (G_filter.ifindex && G_filter.ifindex != (int) ifa->ifa_index)
 		return 0;
 	if ((G_filter.scope ^ ifa->ifa_scope) & G_filter.scopemask)
 		return 0;
@@ -267,7 +267,7 @@ static int FAST_FUNC print_addrinfo(const struct sockaddr_nl *who UNUSED_PARAM,
 
 	if (G_filter.flushb) {
 		struct nlmsghdr *fn;
-		if (NLMSG_ALIGN(G_filter.flushp) + n->nlmsg_len > G_filter.flushe) {
+		if (NLMSG_ALIGN(G_filter.flushp) + n->nlmsg_len > (unsigned) G_filter.flushe) {
 			if (flush_update())
 				return -1;
 		}
@@ -379,8 +379,8 @@ static int print_selected_addrinfo(int ifindex, struct nlmsg_list *ainfo)
 			continue;
 		if (n->nlmsg_len < NLMSG_LENGTH(sizeof(ifa)))
 			return -1;
-		if (ifa->ifa_index != ifindex
-		 || (G_filter.family && G_filter.family != ifa->ifa_family)
+		if ((int) ifa->ifa_index != ifindex
+		 || (G_filter.family && G_filter.family != (family_t) ifa->ifa_family)
 		) {
 			continue;
 		}
@@ -529,8 +529,8 @@ int FAST_FUNC ipaddr_list_or_flush(char **argv, int flush)
 				struct nlmsghdr *n = &a->h;
 				struct ifaddrmsg *ifa = NLMSG_DATA(n);
 
-				if (ifa->ifa_index != ifi->ifi_index
-				 || (G_filter.family && G_filter.family != ifa->ifa_family)
+				if ((int) ifa->ifa_index != (int) ifi->ifi_index
+				 || (G_filter.family && G_filter.family != (family_t) ifa->ifa_family)
 				) {
 					continue;
 				}

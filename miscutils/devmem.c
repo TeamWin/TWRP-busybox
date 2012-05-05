@@ -19,7 +19,7 @@ int devmem_main(int argc UNUSED_PARAM, char **argv)
 {
 	void *map_base, *virt_addr;
 	uint64_t read_result;
-	uint64_t writeval = writeval; /* for compiler */
+	uint64_t writeval = 0;
 	off_t target;
 	unsigned page_size, mapped_size, offset_in_page;
 	int fd;

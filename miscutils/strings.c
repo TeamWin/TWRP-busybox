@@ -26,8 +26,8 @@
 int strings_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int strings_main(int argc UNUSED_PARAM, char **argv)
 {
-	int n, c, status = EXIT_SUCCESS;
-	unsigned count;
+	int c, status = EXIT_SUCCESS;
+	unsigned n, count;
 	off_t offset;
 	FILE *file;
 	char *string;

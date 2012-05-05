@@ -216,7 +216,7 @@ static int FAST_FUNC print_route(const struct sockaddr_nl *who UNUSED_PARAM,
 			return 0;
 		}
 
-		if (NLMSG_ALIGN(G_filter.flushp) + n->nlmsg_len > G_filter.flushe) {
+		if ((int) (NLMSG_ALIGN(G_filter.flushp) + n->nlmsg_len) > G_filter.flushe) {
 			if (flush_update())
 				bb_error_msg_and_die("flush");
 		}

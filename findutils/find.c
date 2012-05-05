@@ -376,7 +376,7 @@ IF_FEATURE_FIND_PRUNE(  ACTS(prune))
 IF_FEATURE_FIND_DELETE( ACTS(delete))
 IF_FEATURE_FIND_EXEC(   ACTS(exec,  char **exec_argv; unsigned *subst_count; int exec_argc;))
 IF_FEATURE_FIND_GROUP(  ACTS(group, gid_t gid;))
-IF_FEATURE_FIND_LINKS(  ACTS(links, char links_char; int links_count;))
+IF_FEATURE_FIND_LINKS(  ACTS(links, char links_char; unsigned links_count;))
 
 struct globals {
 	IF_FEATURE_FIND_XDEV(dev_t *xdev_dev;)
@@ -550,7 +550,7 @@ ACTF(regex)
 #if ENABLE_FEATURE_FIND_TYPE
 ACTF(type)
 {
-	return ((statbuf->st_mode & S_IFMT) == ap->type_mask);
+	return ((statbuf->st_mode & S_IFMT) == (unsigned) ap->type_mask);
 }
 #endif
 #if ENABLE_FEATURE_FIND_PERM
@@ -595,7 +595,7 @@ ACTF(mmin)
 #if ENABLE_FEATURE_FIND_NEWER
 ACTF(newer)
 {
-	return (ap->newer_mtime < statbuf->st_mtime);
+	return ((time_t) ap->newer_mtime < (time_t) statbuf->st_mtime);
 }
 #endif
 #if ENABLE_FEATURE_FIND_INUM

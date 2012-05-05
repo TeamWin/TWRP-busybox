@@ -455,10 +455,10 @@ typedef enum
   wordend,	/* Succeeds if at word end.  */
 
   wordbound,	/* Succeeds if at a word boundary.  */
-  notwordbound	/* Succeeds if not at a word boundary.	*/
+  notwordbound,	/* Succeeds if not at a word boundary.	*/
 
 #ifdef emacs
-  ,before_dot,	/* Succeeds if before point.  */
+  before_dot,	/* Succeeds if before point.  */
   at_dot,	/* Succeeds if at point.  */
   after_dot,	/* Succeeds if after point.  */
 
@@ -467,7 +467,7 @@ typedef enum
   syntaxspec,
 
 	/* Matches any character whose syntax is not that specified.  */
-  notsyntaxspec
+  notsyntaxspec,
 #endif /* emacs */
 } re_opcode_t;
 
@@ -1157,7 +1157,7 @@ typedef struct
     DEBUG_PRINT2 ("	available: %d\n", REMAINING_AVAIL_SLOTS);	\
 									\
     /* Ensure we have enough space allocated for what we will push.  */	\
-    while (REMAINING_AVAIL_SLOTS < NUM_FAILURE_ITEMS)			\
+    while ((int) REMAINING_AVAIL_SLOTS < (int) NUM_FAILURE_ITEMS)	\
       {									\
 	if (!DOUBLE_FAIL_STACK (fail_stack))				\
 	  return failure_code;						\
@@ -1171,7 +1171,8 @@ typedef struct
     DEBUG_PRINT1 ("\n");						\
 									\
     if (1)								\
-      for (this_reg = lowest_active_reg; this_reg <= highest_active_reg; \
+      for (this_reg = lowest_active_reg;				\
+	   this_reg <= (int) highest_active_reg; 			\
 	   this_reg++)							\
 	{								\
 	  DEBUG_PRINT2 ("  Pushing reg: %d\n", this_reg);		\
@@ -1195,23 +1196,23 @@ typedef struct
 	  PUSH_FAILURE_ELT (reg_info[this_reg].word);			\
 	}								\
 									\
-    DEBUG_PRINT2 ("  Pushing  low active reg: %d\n", lowest_active_reg);\
+    DEBUG_PRINT2("  Pushing  low active reg: %d\n", lowest_active_reg); \
     PUSH_FAILURE_INT (lowest_active_reg);				\
 									\
-    DEBUG_PRINT2 ("  Pushing high active reg: %d\n", highest_active_reg);\
+    DEBUG_PRINT2("  Pushing high active reg: %d\n", highest_active_reg);\
     PUSH_FAILURE_INT (highest_active_reg);				\
 									\
-    DEBUG_PRINT2 ("  Pushing pattern 0x%x: ", pattern_place);		\
+    DEBUG_PRINT2("  Pushing pattern 0x%x: ", pattern_place);		\
     DEBUG_PRINT_COMPILED_PATTERN (bufp, pattern_place, pend);		\
     PUSH_FAILURE_POINTER (pattern_place);				\
 									\
-    DEBUG_PRINT2 ("  Pushing string 0x%x: `", string_place);		\
+    DEBUG_PRINT2("  Pushing string 0x%x: `", string_place);		\
     DEBUG_PRINT_DOUBLE_STRING (string_place, string1, size1, string2,	\
 				 size2);				\
-    DEBUG_PRINT1 ("'\n");						\
+    DEBUG_PRINT1("'\n");						\
     PUSH_FAILURE_POINTER (string_place);				\
 									\
-    DEBUG_PRINT2 ("  Pushing failure id: %u\n", failure_id);		\
+    DEBUG_PRINT2("  Pushing failure id: %u\n", failure_id);		\
     DEBUG_PUSH (failure_id);						\
   } while (0)
 
@@ -1268,7 +1269,7 @@ typedef struct
   DEBUG_PRINT2 ("  Before pop, next avail: %d\n", fail_stack.avail);	\
   DEBUG_PRINT2 ("		     size: %d\n", fail_stack.size);	\
 									\
-  assert (fail_stack.avail >= NUM_NONREG_ITEMS);			\
+  assert ((int) fail_stack.avail >= (int) NUM_NONREG_ITEMS);		\
 									\
   DEBUG_POP (&failure_id);						\
   DEBUG_PRINT2 ("  Popping failure id: %u\n", failure_id);		\
@@ -1296,7 +1297,7 @@ typedef struct
   DEBUG_PRINT2 ("  Popping  low active reg: %d\n", low_reg);		\
 									\
   if (1)								\
-    for (this_reg = high_reg; this_reg >= low_reg; this_reg--)		\
+    for (this_reg = high_reg; this_reg >= (int) low_reg; this_reg--)	\
       {									\
 	DEBUG_PRINT2 ("	   Popping reg: %d\n", this_reg);		\
 									\
@@ -1311,7 +1312,8 @@ typedef struct
       }									\
   else									\
     {									\
-      for (this_reg = highest_active_reg; this_reg > high_reg; this_reg--) \
+      for (this_reg = highest_active_reg; this_reg > (int) high_reg;	\
+           this_reg--)							\
 	{								\
 	  reg_info[this_reg].word.integer = 0;				\
 	  regend[this_reg] = 0;						\
@@ -1431,14 +1433,14 @@ static reg_errcode_t compile_range ();
 
 /* Make sure we have at least N more bytes of space in buffer.	*/
 #define GET_BUFFER_SPACE(n)						\
-    while (b - bufp->buffer + (n) > bufp->allocated)			\
+    while (b - bufp->buffer + (n) > (int) bufp->allocated)		\
       EXTEND_BUFFER ()
 
 /* Make sure we have one more byte of buffer space and then add C to it.  */
 #define BUF_PUSH(c)							\
   do {									\
     GET_BUFFER_SPACE (1);						\
-    *b++ = (unsigned char) (c);						\
+    *b++ = (unsigned char) (c);					        \
   } while (0)
 
 
@@ -3490,7 +3492,7 @@ static boolean alt_match_null_string_p (),
 
 /* Free everything we malloc.  */
 #ifdef MATCH_MAY_ALLOCATE
-#define FREE_VAR(var) if (var) { REGEX_FREE (var); var = NULL; } else
+#define FREE_VAR(var) if (var) { REGEX_FREE (var); var = NULL; } else {}
 #define FREE_VARIABLES()						\
   do {									\
     REGEX_FREE_STACK (fail_stack.stack);				\
@@ -3746,7 +3748,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
   /* Initialize subexpression text positions to -1 to mark ones that no
      start_memory/stop_memory has been seen for. Also initialize the
      register information struct.  */
-  for (mcnt = 1; mcnt < num_regs; mcnt++)
+  for (mcnt = 1; mcnt < (int) num_regs; mcnt++)
     {
       regstart[mcnt] = regend[mcnt]
 	= old_regstart[mcnt] = old_regend[mcnt] = REG_UNSET_VALUE;
@@ -3846,7 +3848,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 
 		      DEBUG_PRINT1 ("\nSAVING match as best so far.\n");
 
-		      for (mcnt = 1; mcnt < num_regs; mcnt++)
+		      for (mcnt = 1; mcnt < (int) num_regs; mcnt++)
 			{
 			  best_regstart[mcnt] = regstart[mcnt];
 			  best_regend[mcnt] = regend[mcnt];
@@ -3872,7 +3874,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 		  dend = ((d >= string1 && d <= end1)
 			   ? end_match_1 : end_match_2);
 
-		  for (mcnt = 1; mcnt < num_regs; mcnt++)
+		  for (mcnt = 1; mcnt < (int) num_regs; mcnt++)
 		    {
 		      regstart[mcnt] = best_regstart[mcnt];
 		      regend[mcnt] = best_regend[mcnt];
@@ -3937,7 +3939,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 
 	      /* Go through the first `min (num_regs, regs->num_regs)'
 		 registers, since that is all we initialized.  */
-	      for (mcnt = 1; mcnt < MIN (num_regs, regs->num_regs); mcnt++)
+	      for (mcnt = 1; mcnt < (int) MIN (num_regs, regs->num_regs); mcnt++)
 		{
 		  if (REG_UNSET (regstart[mcnt]) || REG_UNSET (regend[mcnt]))
 		    regs->start[mcnt] = regs->end[mcnt] = -1;
@@ -3955,7 +3957,7 @@ re_match_2_internal (bufp, string1, size1, string2, size2, pos, regs, stop)
 		 we (re)allocated the registers, this is the case,
 		 because we always allocate enough to have at least one
 		 -1 at the end.	 */
-	      for (mcnt = num_regs; mcnt < regs->num_regs; mcnt++)
+	      for (mcnt = num_regs; mcnt < (int) regs->num_regs; mcnt++)
 		regs->start[mcnt] = regs->end[mcnt] = -1;
 	    } /* regs && !bufp->no_sub */
 

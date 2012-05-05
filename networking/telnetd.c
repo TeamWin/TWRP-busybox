@@ -488,8 +488,8 @@ int telnetd_main(int argc UNUSED_PARAM, char **argv)
 	struct tsession *ts;
 #if ENABLE_FEATURE_TELNETD_STANDALONE
 #define IS_INETD (opt & OPT_INETD)
-	int master_fd = master_fd; /* for compiler */
-	int sec_linger = sec_linger;
+	int master_fd = 0;
+	int sec_linger = 0;
 	char *opt_bindaddr = NULL;
 	char *opt_portnbr;
 #else

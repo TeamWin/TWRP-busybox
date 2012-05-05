@@ -62,7 +62,7 @@ int flash_lock_unlock_main(int argc UNUSED_PARAM, char **argv)
 			sectors = info.size / info.erasesize;
 		} else {
 // isn't this useless?
-			unsigned long num = info.size / info.erasesize;
+			long num = info.size / info.erasesize;
 			if (sectors > num) {
 				bb_error_msg_and_die("%ld are too many "
 						"sectors, device only has "

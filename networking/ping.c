@@ -546,7 +546,7 @@ static void unpack_tail(int sz, uint32_t *tp,
 		uint16_t recv_seq, int ttl)
 {
 	const char *dupmsg = " (DUP!)";
-	unsigned triptime = triptime; /* for gcc */
+	unsigned triptime = 0;
 
 	++nreceived;
 
@@ -586,7 +586,7 @@ static void unpack4(char *buf, int sz, struct sockaddr_in *from)
 	int hlen;
 
 	/* discard if too short */
-	if (sz < (datalen + ICMP_MINLEN))
+	if (sz < (int) (datalen + ICMP_MINLEN))
 		return;
 
 	/* check IP header */
@@ -601,7 +601,7 @@ static void unpack4(char *buf, int sz, struct sockaddr_in *from)
 		uint16_t recv_seq = ntohs(icmppkt->icmp_seq);
 		uint32_t *tp = NULL;
 
-		if (sz >= ICMP_MINLEN + sizeof(uint32_t))
+		if (sz >= (int) (ICMP_MINLEN + sizeof(uint32_t)))
 			tp = (uint32_t *) icmppkt->icmp_data;
 		unpack_tail(sz, tp,
 			inet_ntoa(*(struct in_addr *) &from->sin_addr.s_addr),

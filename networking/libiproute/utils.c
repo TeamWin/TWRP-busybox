@@ -146,7 +146,7 @@ static void get_prefix_1(inet_prefix *dst, char *arg, int family)
 
 			netmask_pfx.family = AF_UNSPEC;
 			plen = bb_strtou(slash + 1, NULL, 0);
-			if ((errno || plen > dst->bitlen)
+			if ((errno || plen > (unsigned) dst->bitlen)
 			 && get_addr_1(&netmask_pfx, slash + 1, family) != 0
 			) {
 				goto bad;
@@ -162,7 +162,7 @@ static void get_prefix_1(inet_prefix *dst, char *arg, int family)
 
 				for (plen = 0; mask; mask <<= 1)
 					++plen;
-				if (plen > dst->bitlen)
+				if (plen > (unsigned) dst->bitlen)
 					goto bad;
 				/* dst->flags |= PREFIXLEN_SPECIFIED; */
 			}

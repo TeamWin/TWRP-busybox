@@ -259,7 +259,7 @@ static void unzip_extract(zip_header_t *zip_header, int dst_fd)
 			bb_error_msg_and_die("crc error");
 		}
 		/* Validate decompression - size */
-		if (zip_header->formatted.ucmpsize != aux.bytes_out) {
+		if (zip_header->formatted.ucmpsize != (uint32_t) aux.bytes_out) {
 			/* Don't die. Who knows, maybe len calculation
 			 * was botched somewhere. After all, crc matched! */
 			bb_error_msg("bad length");

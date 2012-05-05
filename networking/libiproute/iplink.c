@@ -279,7 +279,7 @@ static int ipaddr_list_link(char **argv)
 
 #ifndef NLMSG_TAIL
 #define NLMSG_TAIL(nmsg) \
-	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
+	((struct rtattr *) ((size_t)((void *) (nmsg)) + (size_t) NLMSG_ALIGN((nmsg)->nlmsg_len)))
 #endif
 /* Return value becomes exitcode. It's okay to not return at all */
 static int do_change(char **argv, const unsigned rtm)
@@ -339,7 +339,7 @@ static int do_change(char **argv, const unsigned rtm)
 		addattr_l(&req.n, sizeof(req), IFLA_LINKINFO, NULL, 0);
 		addattr_l(&req.n, sizeof(req), IFLA_INFO_KIND, type_str,
 				strlen(type_str));
-		linkinfo->rta_len = (void *)NLMSG_TAIL(&req.n) - (void *)linkinfo;
+		linkinfo->rta_len = (size_t) NLMSG_TAIL(&req.n) - (size_t) linkinfo;
 	}
 	if (rtm != RTM_NEWLINK) {
 		if (!dev_str)

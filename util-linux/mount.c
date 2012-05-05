@@ -898,7 +898,7 @@ static char *nfs_strerror(int status)
 {
 	int i;
 
-	for (i = 0; i < ARRAY_SIZE(nfs_err_stat); i++) {
+	for (i = 0; i < (int) ARRAY_SIZE(nfs_err_stat); i++) {
 		if (nfs_err_stat[i] == status)
 			return strerror(nfs_err_errnum[i]);
 	}

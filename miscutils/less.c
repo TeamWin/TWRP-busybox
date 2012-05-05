@@ -335,7 +335,7 @@ static void re_wrap(void)
 				dst_idx++;
 				if (new_line_pos < w) {
 					/* if we came here thru "goto next_new" */
-					if (src_idx > max_fline)
+					if (src_idx > (int) max_fline)
 						break;
 					lineno = LINENO(s);
 				}
@@ -351,7 +351,7 @@ static void re_wrap(void)
 			new_cur_fline = dst_idx;
 		src_idx++;
 		/* no more lines? finish last new line (and exit the loop) */
-		if (src_idx > max_fline)
+		if (src_idx > (int) max_fline)
 			goto next_new;
 		s = old_flines[src_idx];
 		if (lineno != LINENO(s)) {
@@ -1412,7 +1412,7 @@ static void add_mark(void)
 static void goto_mark(void)
 {
 	int letter;
-	int i;
+	unsigned i;
 
 	print_statusline("Go to mark: ");
 	letter = less_getch(sizeof("Go to mark: ") - 1);
@@ -1420,11 +1420,11 @@ static void goto_mark(void)
 
 	if (isalpha(letter)) {
 		for (i = 0; i <= num_marks; i++)
-			if (letter == mark_lines[i][0]) {
+			if ((unsigned) letter == mark_lines[i][0]) {
 				buffer_line(mark_lines[i][1]);
 				break;
 			}
-		if (num_marks == 14 && letter != mark_lines[14][0])
+		if (num_marks == 14 && (unsigned) letter != mark_lines[14][0])
 			print_statusline("Mark not set");
 	} else
 		print_statusline("Invalid mark letter");

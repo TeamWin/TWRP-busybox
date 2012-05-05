@@ -34,9 +34,10 @@ int    stime(time_t *) 25
 int    swapon(const char *, int)       87
 int    swapoff(const char *)   115
 */
-int              stime (time_t *);
-int              swapon (const char *, int);
-int              swapoff (const char *);
+int    stime(time_t *);
+int    swapon(const char *, int);
+int    swapoff(const char *);
+int    getsid(pid_t);
 
 /* local definition in libbb/xfuncs_printf.c */
 int fdprintf(int fd, const char *format, ...);

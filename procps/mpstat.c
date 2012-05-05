@@ -85,7 +85,7 @@ struct stats_irq {
 struct globals {
 	int interval;
 	int count;
-	unsigned cpu_nr;                /* Number of CPUs */
+	int cpu_nr;                     /* Number of CPUs */
 	unsigned irqcpu_nr;             /* Number of interrupts per CPU */
 	unsigned softirqcpu_nr;         /* Number of soft interrupts per CPU */
 	unsigned options;
@@ -167,7 +167,7 @@ static ALWAYS_INLINE data_t jiffies_diff(data_t old, data_t new)
 	return (diff == 0) ? 1 : diff;
 }
 
-static int is_cpu_in_bitmap(unsigned cpu)
+static int is_cpu_in_bitmap(int cpu)
 {
 	return G.cpu_bitmap[cpu >> 3] & (1 << (cpu & 7));
 }
@@ -179,7 +179,8 @@ static void write_irqcpu_stats(struct stats_irqcpu *per_cpu_stats[],
 		const char *prev_str, const char *current_str)
 {
 	int j;
-	int offset, cpu;
+	int offset;
+	int cpu;
 	struct stats_irqcpu *p0, *q0;
 
 	/* Check if number of IRQs has changed */
@@ -462,7 +463,7 @@ static void get_cpu_statistics(struct stats_cpu *cpu, data_t *up, data_t *up0)
 
 	while (fgets(buf, sizeof(buf), fp)) {
 		data_t sum;
-		unsigned cpu_number;
+		int cpu_number;
 		struct stats_cpu *cp;
 
 		if (!starts_with_cpu(buf))
@@ -549,8 +550,8 @@ static void get_irqs_from_interrupts(const char *fname,
 	struct stats_irqcpu *ic;
 	char *buf;
 	unsigned buflen;
-	unsigned cpu;
-	unsigned irq;
+	int cpu;
+	int irq;
 	int cpu_index[G.cpu_nr];
 	int iindex;
 
@@ -605,7 +606,7 @@ static void get_irqs_from_interrupts(const char *fname,
 
 		ic = &per_cpu_stats[current][irq];
 		len = cp - buf;
-		if (len >= sizeof(ic->irq_name)) {
+		if (len >= (int) sizeof(ic->irq_name)) {
 			len = sizeof(ic->irq_name) - 1;
 		}
 		safe_strncpy(ic->irq_name, buf, len + 1);
@@ -672,7 +673,7 @@ static void alarm_handler(int sig UNUSED_PARAM)
 static void main_loop(void)
 {
 	unsigned current;
-	unsigned cpus;
+	int cpus;
 
 	/* Read the stats */
 	if (G.cpu_nr > 1) {
@@ -816,7 +817,7 @@ static int get_irqcpu_nr(const char *f, int max_irqs)
 	FILE *fp;
 	char *line;
 	unsigned linelen;
-	unsigned irq;
+	int irq;
 
 	fp = fopen_for_read(f);
 	if (!fp)  /* No interrupts file */
@@ -939,7 +940,7 @@ int mpstat_main(int UNUSED_PARAM argc, char **argv)
 				memset(G.cpu_bitmap, 0xff, G.cpu_bitmap_len);
 			} else {
 				/* Get CPU number */
-				unsigned n = xatoi_positive(t);
+				int n = xatoi_positive(t);
 				if (n >= G.cpu_nr)
 					bb_error_msg_and_die("not that many processors");
 				n++;

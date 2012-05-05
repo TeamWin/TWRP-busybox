@@ -153,7 +153,7 @@ static int get_next_block(bunzip_data *bd)
 	struct group_data *hufGroup;
 	int dbufCount, dbufSize, groupCount, *base, *limit, selector,
 		i, j, t, runPos, symCount, symTotal, nSelectors, byteCount[256];
-	int runCnt = runCnt; /* for compiler */
+	int runCnt = 0;
 	uint8_t uc, symToByte[256], mtfSymbol[256], *selectors;
 	uint32_t *dbuf;
 	unsigned origPtr;
@@ -780,7 +780,7 @@ unpack_bz2_stream(transformer_aux_data_t *aux, int src_fd, int dst_fd)
 		len = bd->inbufCount - bd->inbufPos;
 		memcpy(outbuf, &bd->inbuf[bd->inbufPos], len);
 		if (len < 2) {
-			if (safe_read(src_fd, outbuf + len, 2 - len) != 2 - len)
+			if (safe_read(src_fd, outbuf + len, 2 - len) != (int)(2 - len))
 				break;
 			len = 2;
 		}

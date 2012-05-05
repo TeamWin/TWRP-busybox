@@ -448,7 +448,7 @@ static NOINLINE int *create_J(FILE_and_pos_t ft[2], int nlen[2], off_t *ix[2])
 	for (i = 0; i < 2; i++) {
 		unsigned hash;
 		token_t tok;
-		size_t sz = 100;
+		int sz = 100;
 		nfile[i] = xmalloc((sz + 3) * sizeof(nfile[i][0]));
 		/* ft gets here without the correct position, cant use seek_ft */
 		ft[i].ft_pos = 0;

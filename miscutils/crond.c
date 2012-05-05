@@ -922,7 +922,7 @@ int crond_main(int argc UNUSED_PARAM, char **argv)
 		 */
 		if (stat(G.crontab_dir_name, &sbuf) != 0)
 			sbuf.st_mtime = 0; /* force update (once) if dir was deleted */
-		if (G.crontab_dir_mtime != sbuf.st_mtime) {
+		if ((time_t) G.crontab_dir_mtime != (time_t) sbuf.st_mtime) {
 			G.crontab_dir_mtime = sbuf.st_mtime;
 			rescan = 1;
 		}

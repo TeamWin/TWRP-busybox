@@ -984,12 +984,12 @@ select_and_cluster(void)
 	int        size = 3 * G.peer_cnt;
 	/* for selection algorithm */
 	point_t    point[size];
-	unsigned   num_points, num_candidates;
+	int        num_points, num_candidates;
 	double     low, high;
-	unsigned   num_falsetickers;
+	int        num_falsetickers;
 	/* for cluster algorithm */
 	survivor_t survivor[size];
-	unsigned   num_survivors;
+	int        num_survivors;
 
 	/* Selection */
 
@@ -1050,12 +1050,12 @@ select_and_cluster(void)
 	num_falsetickers = 0;
 	while (1) {
 		int c;
-		unsigned num_midpoints = 0;
+		int num_midpoints = 0;
 
 		low = 1 << 9;
 		high = - (1 << 9);
 		c = 0;
-		for (i = 0; i < num_points; i++) {
+		for (i = 0; i < (int) num_points; i++) {
 			/* We want to do:
 			 * if (point[i].type == -1) c++;
 			 * if (point[i].type == 1) c--;
@@ -1138,7 +1138,7 @@ select_and_cluster(void)
 	 * jitter until a termination condition is met.
 	 */
 	while (1) {
-		unsigned max_idx = max_idx;
+		static int max_idx;
 		double max_selection_jitter = max_selection_jitter;
 		double min_jitter = min_jitter;
 

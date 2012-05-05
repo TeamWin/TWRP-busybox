@@ -337,7 +337,7 @@ static int grep_file(FILE *file)
 #endif
 	) {
 		llist_t *pattern_ptr = pattern_head;
-		grep_list_data_t *gl = gl; /* for gcc */
+		static grep_list_data_t *gl;
 
 		linenum++;
 		found = 0;
@@ -650,7 +650,7 @@ int grep_main(int argc UNUSED_PARAM, char **argv)
 		lines_before = 0;
 		lines_after = 0;
 	} else if (lines_before > 0) {
-		if (lines_before > INT_MAX / sizeof(long long))
+		if ((unsigned) lines_before > (unsigned) (INT_MAX / sizeof(long long)))
 			lines_before = INT_MAX / sizeof(long long);
 		/* overflow in (lines_before * sizeof(x)) is prevented (above) */
 		before_buf = xzalloc(lines_before * sizeof(before_buf[0]));

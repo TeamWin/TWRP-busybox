@@ -90,7 +90,7 @@ int taskset_main(int argc UNUSED_PARAM, char **argv)
 	unsigned opt_p;
 	const char *current_new;
 	char *pid_str;
-	char *aff = aff; /* for compiler */
+	char *aff = NULL;
 
 	/* NB: we mimic util-linux's taskset: -p does not take
 	 * an argument, i.e., "-pN" is NOT valid, only "-p N"!

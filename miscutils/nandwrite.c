@@ -199,7 +199,7 @@ int nandwrite_main(int argc UNUSED_PARAM, char **argv)
 			 */
 			break;
 		}
-		if (cnt < meminfo_writesize) {
+		if (cnt < (ssize_t) meminfo_writesize) {
 			if (IS_NANDDUMP)
 				bb_error_msg_and_die("short read");
 			if (!(opts & OPT_p))
@@ -218,7 +218,7 @@ int nandwrite_main(int argc UNUSED_PARAM, char **argv)
 		}
 
 		mtdoffset += meminfo_writesize;
-		if (cnt < meminfo_writesize)
+		if (cnt < (ssize_t) meminfo_writesize)
 			break;
 	}
 

@@ -677,7 +677,7 @@ static void display_files(struct dnode **dn, unsigned nfiles)
 		/* find the longest file name, use that as the column width */
 		for (i = 0; dn[i]; i++) {
 			int len = calc_name_len(dn[i]->name);
-			if (column_width < len)
+			if ((int)column_width < len)
 				column_width = len;
 		}
 		column_width += 1 +

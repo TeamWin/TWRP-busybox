@@ -296,7 +296,7 @@ static void fb_drawprogressbar(unsigned percent)
 	pos_x = left_x;
 	if (percent > 0) {
 		int y;
-		unsigned i;
+		int i;
 
 		// actual progress bar
 		pos_x += (unsigned)(width * percent) / 100;
@@ -444,7 +444,7 @@ int fbsplash_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int fbsplash_main(int argc UNUSED_PARAM, char **argv)
 {
 	const char *fb_device, *cfg_filename, *fifo_filename;
-	FILE *fp = fp; // for compiler
+	FILE *fp = NULL;
 	char *num_buf;
 	unsigned num;
 	bool bCursorOff;

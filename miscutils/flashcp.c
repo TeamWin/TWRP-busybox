@@ -48,7 +48,7 @@ int flashcp_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int flashcp_main(int argc UNUSED_PARAM, char **argv)
 {
 	int fd_f, fd_d; /* input file and mtd device file descriptors */
-	int i;
+	unsigned i;
 	uoff_t erase_count;
 	unsigned opts;
 	struct mtd_info_user mtd;
@@ -134,7 +134,7 @@ int flashcp_main(int argc UNUSED_PARAM, char **argv)
 				int ret;
 				errno = 0;
 				ret = full_write(fd_d, buf, count);
-				if (ret != count) {
+				if (ret != (int) count) {
 					bb_perror_msg_and_die("write error at 0x%"OFF_FMT"x on %s, "
 						"write returned %d",
 						done, devicename, ret);

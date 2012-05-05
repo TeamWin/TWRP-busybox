@@ -9,6 +9,7 @@ BIONIC_ICS := true
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := android/regex/regex.c
 LOCAL_C_INCLUDES := $(BB_PATH)/android/regex
+LOCAL_CFLAGS := -Wno-sign-compare
 LOCAL_MODULE := libclearsilverregex
 include $(BUILD_STATIC_LIBRARY)
 
