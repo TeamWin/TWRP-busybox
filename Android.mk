@@ -26,12 +26,13 @@ include $(CLEAR_VARS)
 
 # Each profile require a compressed usage/config, outside the source tree for git history
 # We keep the uncompressed headers in local include-<profile> to track config changes.
+# TODO: generate includes in out/
 
-BB_INCLUDES_OUT := $(TARGET_OUT_INTERMEDIATES)/include
-$(BB_INCLUDES_OUT):
-	mkdir -p $(ANDROID_BUILD_TOP)/$(BB_INCLUDES_OUT)
+# BB_INCLUDES_OUT := $(TARGET_OUT_INTERMEDIATES)/include
+# $(BB_INCLUDES_OUT):
+#	mkdir -p $(ANDROID_BUILD_TOP)/$(BB_INCLUDES_OUT)
 
-# Execute make clean, make prepare and copy profiles required for normal & static busybox (recovery)
+# Execute make clean, make prepare and copy profiles required for normal & static lib (recovery)
 
 KERNEL_MODULES_DIR ?= /system/lib/modules
 BUSYBOX_CONFIG := minimal full
@@ -44,8 +45,6 @@ $(BUSYBOX_CONFIG):
 	@#cp $(BB_PATH)/.config $(BB_PATH)/.config-$@
 	@mkdir -p $(BB_PATH)/include-$@
 	cp $(BB_PATH)/include/*.h $(BB_PATH)/include-$@/
-	@mkdir -p $(BB_INCLUDES_OUT)/busybox-$@
-	@cp $(BB_PATH)/include/*.h $(BB_INCLUDES_OUT)/busybox-$@/
 	@rm $(BB_PATH)/include/usage_compressed.h
 	@rm $(BB_PATH)/include/autoconf.h
 	@rm -f $(BB_PATH)/.config-old
@@ -87,7 +86,6 @@ ifeq ($(TARGET_ARCH),mips)
 endif
 
 BUSYBOX_C_INCLUDES = \
-	$(BB_INCLUDES_OUT)/busybox-$(BUSYBOX_CONFIG) \
 	$(BB_PATH)/include-$(BUSYBOX_CONFIG) \
 	$(BB_PATH)/include $(BB_PATH)/libbb \
 	bionic/libc/private \
