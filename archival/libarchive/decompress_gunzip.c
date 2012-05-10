@@ -409,7 +409,7 @@ static int huft_build(const unsigned *b, const unsigned n,
 						f -= *xp; /* else deduct codes from patterns */
 					}
 				}
-				j = ((unsigned) (w + j) > eob_len && w > 0 && (unsigned) w < eob_len) ? eob_len - w : j;	/* make EOB code end at table */
+				j = ((unsigned) (w + j) > eob_len && w >= 0 && (unsigned) w < eob_len) ? eob_len - w : j;	/* make EOB code end at table */
 				z = 1 << j;	/* table entries for j-bit table */
 				ws[htl+1] = w + j;	/* set bits decoded in stack */
 
