@@ -38,7 +38,7 @@ procps/lsof.c procps/pstree.c procps/pwdx.c
 
 shell/ash.c shell/ash_ptr_hack.c shell/math.c shell/random.c shell/shell_common.c
 
-util-linux/dmesg.c util-linux/fdisk.c util-linux/flock.c util-linux/freeramdisk.c util-linux/getopt.c util-linux/hexdump.c util-linux/losetup.c util-linux/lspci.c util-linux/lsusb.c util-linux/mkfs_ext2.c util-linux/mkswap.c util-linux/more.c util-linux/mount.c util-linux/rdev.c util-linux/rev.c util-linux/swaponoff.c util-linux/umount.c
+util-linux/blkid.c util-linux/dmesg.c util-linux/fdisk.c util-linux/flock.c util-linux/freeramdisk.c util-linux/getopt.c util-linux/hexdump.c util-linux/losetup.c util-linux/lspci.c util-linux/lsusb.c util-linux/mkfs_ext2.c util-linux/mkswap.c util-linux/more.c util-linux/mount.c util-linux/rdev.c util-linux/rev.c util-linux/swaponoff.c util-linux/umount.c
 
 util-linux/blockdev.c
 
