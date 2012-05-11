@@ -2,7 +2,7 @@
  * Automatically generated C config: don't edit
  * Busybox version: 1.20.0-cm9
  */
-#define AUTOCONF_TIMESTAMP "2012-05-06 01:47 +0200"
+#define AUTOCONF_TIMESTAMP "2012-05-11 17:02 -0400"
 
 #define CONFIG_HAVE_DOT_CONFIG 1
 #define ENABLE_HAVE_DOT_CONFIG 1
@@ -1836,14 +1836,14 @@
 #define ENABLE_FEATURE_ACPID_COMPAT 0
 #define IF_FEATURE_ACPID_COMPAT(...)
 #define IF_NOT_FEATURE_ACPID_COMPAT(...) __VA_ARGS__
-#undef CONFIG_BLKID
-#define ENABLE_BLKID 0
-#define IF_BLKID(...)
-#define IF_NOT_BLKID(...) __VA_ARGS__
-#undef CONFIG_FEATURE_BLKID_TYPE
-#define ENABLE_FEATURE_BLKID_TYPE 0
-#define IF_FEATURE_BLKID_TYPE(...)
-#define IF_NOT_FEATURE_BLKID_TYPE(...) __VA_ARGS__
+#define CONFIG_BLKID 1
+#define ENABLE_BLKID 1
+#define IF_BLKID(...) __VA_ARGS__
+#define IF_NOT_BLKID(...)
+#define CONFIG_FEATURE_BLKID_TYPE 1
+#define ENABLE_FEATURE_BLKID_TYPE 1
+#define IF_FEATURE_BLKID_TYPE(...) __VA_ARGS__
+#define IF_NOT_FEATURE_BLKID_TYPE(...)
 #define CONFIG_DMESG 1
 #define ENABLE_DMESG 1
 #define IF_DMESG(...) __VA_ARGS__
